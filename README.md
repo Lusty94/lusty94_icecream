@@ -46,6 +46,23 @@ PLEASE MAKE SURE TO READ THIS ENTIRE FILE AS IT COVERS SOME IMPORTANT INFORMATIO
 
 
 
+
+## DEPENDENCIES
+
+- POLAR ICE MLO - https://forum.cfx.re/t/free-polar-ice-mlo/5166033 [CAN BE MOVED TO ANOTHER MLO BY MOVING TARGET LOCATIONS IN CONFIG]
+
+- QB-CORE - https://github.com/qbcore-framework/qb-core
+- QB-TARGET - https://github.com/qbcore-framework/qb-target
+- QB-MENU - https://github.com/qbcore-framework/qb-menu
+- QB-INPUT - https://github.com/qbcore-framework/qb-input
+- PROGRESSBAR - https://github.com/qbcore-framework/progressbar
+
+- OX_LIB - https://github.com/overextended/ox_lib/releases/tag/v3.10.0
+
+- JIM-CONSUMABLES - https://github.com/jimathy/jim-consumables [ONLY REQUIRED IF CONFIG.USEJIMCONSUMABLES IS SET TO TRUE]
+
+
+
 ## INTERACT SOUND
 
 - If set to true in the config then this script uses custom sounds that need to be placed inside of interact-sound resource
