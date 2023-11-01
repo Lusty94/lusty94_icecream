@@ -19,7 +19,7 @@ Config.DebugPoly = false
 --Debugs polyzones and shows green boxes
 
 
-Config.UseJimConsumables = true
+Config.UseJimConsumables = false
 --Uses jim-consumables for consuming food / drink items -- IF SET TO FALSE MAKE SURE TO ADD THE ITEM NAMES TO YOUR OWN CONSUMABLES SCRIPT
 
 
@@ -78,10 +78,16 @@ Config.CoreSettings = {
         PourSoftDrinks = 'fizzydrinksmachine', -- sound to be played when preparing soft drinks
         ServeIceCream = 'serveicecream', -- sound to be played when preparing ice cream
     },
-    Shop = {
-        Type = 'qb', -- support for qb shops and jim shops
-        --use 'qb' for qb-shops 
-        --use 'jim' for jim-shop
+    Inventory = {
+        Type = 'qb' -- support for qb-inventory & ox_inventory
+        --use 'qb' for qb-inventory
+        --use 'ox' for ox_inventory
+    },
+    Shop = { -- support for qb-inventory shops, jim-shops and ox_inventory shops - IF USING OX INVENTORY YOU MUST CREATE YOUR OWN SHOP INSIDE OX_INVENTORY TO ACCESS THE SUPPLIES STORE USING THE SNIPPET PROVIDED IN THE README FILE
+        Type = 'qb',
+        --use 'qb' for qb-inventory shops
+        --use 'jim' for jim-shops
+        --use 'ox' for ox_inventory shops
     },
     ProgressBar = {
         Times = {
@@ -113,7 +119,7 @@ Config.InteractionLocations = {
         Location = vector3(271.89, 137.63, 104.6), Height = 0.5, Width = 0.5, Heading = 1.87, MinZ = 104, MaxZ = 104.75, CashSymbol = '£', Icon = 'fa-solid fa-cash-register', Label = "Charge Customer", Size = vec3(0.5,0.5,0.5), 
     },
     CollectionTray = {
-        Location = vector3(272.73, 137.3, 104.5), Height = 0.5, Width = 0.5, Heading = 348.95, MinZ = 104, MaxZ = 104.75, Icon = 'fa-solid fa-box-archive', Label = "Open Collection Tray",  Size = vec3(0.5,0.5,0.2),
+        Location = vector3(272.73, 137.3, 104.5), Height = 0.5, Width = 0.5, Heading = 348.95, MinZ = 104, MaxZ = 105, Icon = 'fa-solid fa-box-archive', Label = "Open Collection Tray",  Size = vec3(0.5,0.5,0.35),
         StashSize = 1000000,  
         StashSlots = 5,       
     },

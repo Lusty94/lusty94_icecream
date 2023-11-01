@@ -1,4 +1,8 @@
-if Config.CoreSettings.Target.Type == 'qb' then
+local TargetType = Config.CoreSettings.Target.Type
+local ShopType = Config.CoreSettings.Shop.Type
+local InvType = Config.CoreSettings.Inventory.Type
+
+if TargetType == 'qb' then
     exports['qb-target']:AddBoxZone("Duty", Config.InteractionLocations.Job.Duty.Location, Config.InteractionLocations.Job.Duty.Width, Config.InteractionLocations.Job.Duty.Height, {
         name = "Duty",
         heading = Config.InteractionLocations.Job.Duty.Heading,
@@ -234,7 +238,7 @@ if Config.CoreSettings.Target.Type == 'qb' then
         },
         distance = 2.0,
     })
-elseif Config.CoreSettings.Target.Type == 'ox' then
+elseif TargetType == 'ox' then
     exports.ox_target:addBoxZone({
         coords = Config.InteractionLocations.Job.Duty.Location,
         size = Config.InteractionLocations.Job.Duty.Size,
@@ -310,27 +314,13 @@ elseif Config.CoreSettings.Target.Type == 'ox' then
         }
     })
     exports.ox_target:addBoxZone({
-        coords = Config.InteractionLocations.CollectionTray.Location,
-        size = Config.InteractionLocations.CollectionTray.Size,
-        rotation = Config.InteractionLocations.CollectionTray.Heading,
-        debug = Config.DebugPoly,
-        options = {
-            {
-                id = 6,
-                event = 'lusty94_icecream:client:OpenCollectionTray',
-                label = Config.InteractionLocations.CollectionTray.Label,
-                icon = Config.InteractionLocations.CollectionTray.Icon,
-            }
-        }
-    }) 
-    exports.ox_target:addBoxZone({
         coords = Config.InteractionLocations.IceCream.Location,
         size = Config.InteractionLocations.IceCream.Size,
         rotation = Config.InteractionLocations.IceCream.Heading,
         debug = Config.DebugPoly,
         options = {
             {
-                id = 7,
+                id = 6,
                 groups = Config.CoreSettings.Job.Name,
                 event = 'lusty94_icecream:client:IceCreamMenu',
                 label = Config.InteractionLocations.IceCream.Label,
@@ -346,7 +336,7 @@ elseif Config.CoreSettings.Target.Type == 'ox' then
         debug = Config.DebugPoly,
         options = {
             {
-                id = 8,
+                id = 7,
                 groups = Config.CoreSettings.Job.Name,
                 event = 'lusty94_icecream:client:SmoothieMenu',
                 label = Config.InteractionLocations.SmoothieMachine.Label,
@@ -361,7 +351,7 @@ elseif Config.CoreSettings.Target.Type == 'ox' then
         debug = Config.DebugPoly,
         options = {
             {
-                id = 9,
+                id = 8,
                 groups = Config.CoreSettings.Job.Name,
                 event = 'lusty94_icecream:client:SoftDrinksMenu',
                 label = Config.InteractionLocations.SoftDrinksMachine.Label,
@@ -376,7 +366,7 @@ elseif Config.CoreSettings.Target.Type == 'ox' then
         debug = Config.DebugPoly,
         options = {
             {
-                id = 10,
+                id = 9,
                 groups = Config.CoreSettings.Job.Name,
                 event = 'lusty94_icecream:client:HotDrinksMenu',
                 label = Config.InteractionLocations.HotDrinksMachine.Label,
@@ -384,50 +374,80 @@ elseif Config.CoreSettings.Target.Type == 'ox' then
             }
         }
     })
-    exports.ox_target:addBoxZone({
-        coords = Config.InteractionLocations.Fridge.Location,
-        size = Config.InteractionLocations.Fridge.Size,
-        rotation = Config.InteractionLocations.Fridge.Heading,
-        debug = Config.DebugPoly,
-        options = {
-            {
-                id = 11,
-                groups = Config.CoreSettings.Job.Name,
-                event = 'lusty94_icecream:client:OpenStorageFridge',
-                label = Config.InteractionLocations.Fridge.Label,
-                icon = Config.InteractionLocations.Fridge.Icon,
+    if InvType == 'ox' then
+        print('InvType set to ox - target option for collection tray now disabled as its controlled by ox_inventory - MAKE SURE YOU HAVE ADDED THE SNIPPET IN THE README FILE TO OX_INVENTORY/DATA/STASHES.LUA TO WORK PROPERLY!')
+    else
+        exports.ox_target:addBoxZone({
+            coords = Config.InteractionLocations.CollectionTray.Location,
+            size = Config.InteractionLocations.CollectionTray.Size,
+            rotation = Config.InteractionLocations.CollectionTray.Heading,
+            debug = Config.DebugPoly,
+            options = {
+                {
+                    id = 10,
+                    event = 'lusty94_icecream:client:OpenCollectionTray',
+                    label = Config.InteractionLocations.CollectionTray.Label,
+                    icon = Config.InteractionLocations.CollectionTray.Icon,
+                }
             }
-        }
-    })
-    exports.ox_target:addBoxZone({
-        coords = Config.InteractionLocations.Ingredients.Location,
-        size = Config.InteractionLocations.Ingredients.Size,
-        rotation = Config.InteractionLocations.Ingredients.Heading,
-        debug = Config.DebugPoly,
-        options = {
-            {
-                id = 12,
-                groups = Config.CoreSettings.Job.Name,
-                event = 'lusty94_icecream:client:IngredientsFridge',
-                label = Config.InteractionLocations.Ingredients.Label,
-                icon = Config.InteractionLocations.Ingredients.Icon,
+        }) 
+    end
+    if InvType == 'ox' then
+        print('InvType set to ox - target option for storage fridge now disabled as its controlled by ox_inventory - MAKE SURE YOU HAVE ADDED THE SNIPPET IN THE README FILE TO OX_INVENTORY/DATA/STASHES.LUA TO WORK PROPERLY!')
+    else
+        exports.ox_target:addBoxZone({
+            coords = Config.InteractionLocations.Fridge.Location,
+            size = Config.InteractionLocations.Fridge.Size,
+            rotation = Config.InteractionLocations.Fridge.Heading,
+            debug = Config.DebugPoly,
+            options = {
+                {
+                    id = 11,
+                    groups = Config.CoreSettings.Job.Name,
+                    event = 'lusty94_icecream:client:OpenStorageFridge',
+                    label = Config.InteractionLocations.Fridge.Label,
+                    icon = Config.InteractionLocations.Fridge.Icon,
+                }
             }
-        }
-    })
-    exports.ox_target:addBoxZone({
-        coords = Config.InteractionLocations.SnackShelf.Location,
-        size = Config.InteractionLocations.SnackShelf.Size,
-        rotation = Config.InteractionLocations.SnackShelf.Heading,
-        debug = Config.DebugPoly,
-        options = {
-            {
-                id = 13,
-                event = 'lusty94_icecream:client:SnackShelf',
-                label = Config.InteractionLocations.SnackShelf.Label,
-                icon = Config.InteractionLocations.SnackShelf.Icon,
+        })
+    end
+    if ShopType == 'ox' then
+        print('ShopType set to ox - target option for ingredients fridge now disabled as its controlled by ox_inventory - MAKE SURE YOU HAVE ADDED THE SNIPPET IN THE README FILE TO OX_INVENTORY/DATA/SHOPS.LUA TO WORK PROPERLY!')
+    else
+        exports.ox_target:addBoxZone({
+            coords = Config.InteractionLocations.Ingredients.Location,
+            size = Config.InteractionLocations.Ingredients.Size,
+            rotation = Config.InteractionLocations.Ingredients.Heading,
+            debug = Config.DebugPoly,
+            options = {
+                {
+                    id = 12,
+                    groups = Config.CoreSettings.Job.Name,
+                    event = 'lusty94_icecream:client:IngredientsFridge',
+                    label = Config.InteractionLocations.Ingredients.Label,
+                    icon = Config.InteractionLocations.Ingredients.Icon,
+                }
             }
-        }
-    })
-elseif Config.CoreSettings.Target.Type == 'custom' then
+        })
+    end
+    if ShopType == 'ox' then
+        print('ShopType set to ox - target option for snack shelf now disabled as its controlled by ox_inventory - MAKE SURE YOU HAVE ADDED THE SNIPPET IN THE README FILE TO OX_INVENTORY/DATA/SHOPS.LUA TO WORK PROPERLY!')
+    else
+        exports.ox_target:addBoxZone({
+            coords = Config.InteractionLocations.SnackShelf.Location,
+            size = Config.InteractionLocations.SnackShelf.Size,
+            rotation = Config.InteractionLocations.SnackShelf.Heading,
+            debug = Config.DebugPoly,
+            options = {
+                {
+                    id = 13,
+                    event = 'lusty94_icecream:client:SnackShelf',
+                    label = Config.InteractionLocations.SnackShelf.Label,
+                    icon = Config.InteractionLocations.SnackShelf.Icon,
+                }
+            }
+        })
+    end
+elseif TargetType == 'custom' then
 -- inset custom target code here
 end

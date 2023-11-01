@@ -27,6 +27,7 @@ PLEASE MAKE SURE TO READ THIS ENTIRE FILE AS IT COVERS SOME IMPORTANT INFORMATIO
 - Multiple types of menu support [qb-menu, jixel-menu, boii_ui menu, ox_lib menu]
 - Support for qb-shops & jim-shops
 - Support for qb-target & ox_target
+- Support for qb-inventory and ox_inventory
 - Support for jim-consumables with different props for each food/drink item
 
 
@@ -45,6 +46,107 @@ PLEASE MAKE SURE TO READ THIS ENTIRE FILE AS IT COVERS SOME IMPORTANT INFORMATIO
 - Add all .ogg files inside [interact-sounds] folder into your interact-sound/client/sounds folder
 
 
+## OX INVENTORY USERS - STORAGE FRIDGE, INGREDIENTS FRIDGE, SNACK SHELF & COLLECTION TRAY INFORMATION
+
+- If you are using ox_inventory you must add this snippet below to ox_inventory/data/shops & stashes.lua for the ingredients and snack shelf stores to work correctly. 
+
+``
+--SHOPS.LUA--
+
+PolarIceIngredients = {
+		name = 'Polar Ice Ingredients Store',
+		groups = {
+			['icecream'] = 0
+		},
+		inventory = {
+			{ name = 'softscoopmix', price = 0 },
+			{ name = 'smoothiemix', price = 0 },
+			{ name = 'vanilla', price = 0 },
+			{ name = 'chocolate', price = 0 },
+			{ name = 'strawberry', price = 0 },
+			{ name = 'mint', price = 0 },
+			{ name = 'pistachio', price = 0 },
+			{ name = 'butterscotch', price = 0 },
+			{ name = 'saltedcaramel', price = 0 },
+			{ name = 'bubblegum', price = 0 },
+			{ name = 'toffee', price = 0 },
+			{ name = 'cookiedough', price = 0 },
+		},
+		locations = {
+			vec3(276.6, 132.4, 104.5)
+		}, 
+		targets = {
+			{ loc = vec3(276.6, 132.4, 104.5), length = 1.4, width = 0.8, heading = 160.28, minZ = 103.75, maxZ = 105.5, distance = 3 }
+		}
+	},
+
+	PolarIceSnacks = {
+		name = 'Polar Ice Snack Shelf',
+		inventory = {
+			{ name = 'vanillacupcake', price = 10 },
+			{ name = 'chocolatecupcake', price = 10 },
+			{ name = 'chocolatebar', price = 10 },
+			{ name = 'jamdoughnut', price = 10 },
+			{ name = 'sugardoughnut', price = 10 },
+			{ name = 'custarddoughnut', price = 10 },
+			{ name = 'chocolatedoughnut', price = 10 },
+		},
+		locations = {
+			vec3(273.65, 137.24, 104.5)
+		}, 
+		targets = {
+			{ loc = vec3(273.65, 137.24, 104.5), length = 0.8, width = 0.8, heading = 159.08, minZ = 104, maxZ = 104.75, distance = 3 }
+		}
+	},
+
+
+
+
+--STASHES.LUA--
+
+
+
+{ -- polar ice cream shop storage fridge
+		coords = vec3(276.49, 124.58, 104.5),
+		target = {
+			loc = vec3(276.49, 124.58, 104.5),
+			length = 1.0,
+			width = 1.0,
+			heading = 161.12,
+			minZ = 103.5,
+			maxZ = 104.5,
+			label = 'Open Storage Fridge'
+		},
+		name = 'polaricestoragefridge',
+		label = 'Polar Ice Storage Fridge',
+		owner = true,
+		slots = 64,
+		weight = 10000000,
+		groups = {['icecream'] = 0}
+	},
+
+	{ -- polar ice cream shop collection tray
+		coords = vec3(272.73, 137.3, 104.5),
+		target = {
+			loc = vec3(273.65, 137.24, 104.5),
+			length = 0.8,
+			width = 0.8,
+			heading = 159.08,
+			minZ = 104,
+			maxZ = 104.75,
+			label = 'Open Collection Tray'
+		},
+		name = 'polaricecollectiontray',
+		label = 'Polar Ice Collection Tray',
+		owner = false,
+		slots = 5,
+		weight = 1000000,
+	},
+
+
+
+
+``
 
 
 ## DEPENDENCIES

@@ -1,5 +1,7 @@
 local QBCore = exports['qb-core']:GetCoreObject()
-
+local ShopType = Config.CoreSettings.Shop.Type
+local InvType = Config.CoreSettings.Inventory.Type
+local TargetType = Config.CoreSettings.Target.Type
 
 
 
@@ -68,10 +70,12 @@ end)
 --Ingredients Fridge
 RegisterNetEvent("lusty94_icecream:client:IngredientsFridge", function()
     if onDuty then
-        if Config.CoreSettings.Shop.Type == 'qb' then
+        if ShopType == 'qb' then
             TriggerServerEvent("inventory:server:OpenInventory", "shop", "Ingredients", Config.InteractionLocations.Ingredients.Items)
-        elseif Config.CoreSettings.Shop.Type == 'jim' then
+        elseif ShopType == 'jim' then
             TriggerServerEvent("jim-shops:ShopOpen", "shop", "Ingredients", Config.InteractionLocations.Ingredients.Items)
+        elseif ShopType == 'ox' then
+            print('ShopType is set to "ox" make sure you have added the required snippet from the readme file to ox_inventory/data/shops.lua as the target option is now disabled and the event controlled by ox_inventory')
         end
     else
         if Config.CoreSettings.Notify.Type == 'qb' then
@@ -91,11 +95,14 @@ end)
 --Storage Fridge
 RegisterNetEvent("lusty94_icecream:client:StorageFridge", function()
     if onDuty then
-        TriggerEvent("inventory:client:SetCurrentStash", "PolarIceFridge")
-        TriggerServerEvent("inventory:server:OpenInventory", "stash", "PolarIceFridge", {
+        if Invtype == 'qb' then
+            TriggerEvent("inventory:client:SetCurrentStash", "PolarIceFridge")
+            TriggerServerEvent("inventory:server:OpenInventory", "stash", "PolarIceFridge", {
             maxweight = Config.InteractionLocations.Fridge.StashSize,
-            slots = Config.InteractionLocations.Fridge.StashSlots,
-        })
+            slots = Config.InteractionLocations.Fridge.StashSlots, })
+        elseif InvType == 'ox' then
+            print('InvType is set to "ox" make sure you have added the required snippet from the readme file to ox_inventory/data/stashes.lua as the target option is now disabled and the event controlled by ox_inventory')
+        end
     else
         if Config.CoreSettings.Notify.Type == 'qb' then
             QBCore.Functions.Notify(Config.Language.Notifications.DutyName, "error", Config.CoreSettings.Notify.Length.Error)
@@ -120,10 +127,12 @@ end)
 ---------------------------------------------------< SNACK SHELF SECTION START >----------------------------------------
 
 AddEventHandler("lusty94_icecream:client:SnackShelf", function()
-    if Config.CoreSettings.Shop.Type == 'qb' then
+    if ShopType == 'qb' then
         TriggerServerEvent("inventory:server:OpenInventory", "shop", "SnackShelf", Config.InteractionLocations.SnackShelf.Items)
-    elseif Config.CoreSettings.Shop.Type == 'jim' then
+    elseif ShopType == 'jim' then
         TriggerServerEvent("jim-shops:ShopOpen", "shop", "SnackShelf", Config.InteractionLocations.SnackShelf.Items)
+    elseif ShopType == 'ox' then
+        print('ShopType is set to "ox" make sure you have added the required snippet from the readme file to ox_inventory/data/shops.lua as the target option is now disabled and the event controlled by ox_inventory')
     end
 end)
 
@@ -138,11 +147,14 @@ end)
 ---------------------------------------------------< COLLECTION TRAY SECTION START >----------------------------------------
 
 RegisterNetEvent("lusty94_icecream:client:OpenCollectionTray", function()
-    TriggerEvent("inventory:client:SetCurrentStash", "collectiontray")
-    TriggerServerEvent("inventory:server:OpenInventory", "stash", "collectiontray", {
+    if InvType == 'qb' then
+        TriggerEvent("inventory:client:SetCurrentStash", "collectiontray")
+        TriggerServerEvent("inventory:server:OpenInventory", "stash", "collectiontray", {
         maxweight = Config.InteractionLocations.CollectionTray.StashSize,
-        slots = Config.InteractionLocations.CollectionTray.StashSlots,
-    })
+        slots = Config.InteractionLocations.CollectionTray.StashSlots, })
+    elseif InvType == 'ox' then
+        print('InvType is set to "ox" make sure you have added the required snippet from the readme file to ox_inventory/data/stashes.lua as the target option is now disabled and the event controlled by ox_inventory')
+    end
 end)
 
 ---------------------------------------------------< COLLECTION TRAY SECTION END >----------------------------------------
@@ -2397,10 +2409,12 @@ end)
 AddEventHandler('onResourceStop', function(resourceName) if resourceName ~= GetCurrentResourceName() then return end
 if (GetCurrentResourceName() ~= resourceName) then
 end
-    print('^5--<^3!^5>-- ^7Lusty94 ^5| ^5--<^3!^5>-- ^7Ice Cream V1.0.0 Stopped Successfully ^5--<^3!^5>--^7')
+    print('^5--<^3!^5>-- ^7Lusty94 ^5| ^5--<^3!^5>-- ^7Ice Cream V1.1.0 Stopped Successfully ^5--<^3!^5>--^7')
     SetModelAsNoLongerNeeded(Computer)
     SetModelAsNoLongerNeeded(Fridge)
-    if Config.CoreSettings.Target.Type == 'qb' then
+    DeleteObject(Fridge)
+    DeleteObject(Computer)
+    if TargetType == 'qb' then
         exports['qb-target']:RemoveZone("Duty")
         exports['qb-target']:RemoveZone("BossMenu")
         exports['qb-target']:RemoveZone("ClothingLocker")
@@ -2414,7 +2428,7 @@ end
         exports['qb-target']:RemoveZone("Fridge")
         exports['qb-target']:RemoveZone("Ingredients")
         exports['qb-target']:RemoveZone("Snacks")
-    elseif Config.CoreSettings.Target.Type == 'ox' then
+    elseif TargetType == 'ox' then
         exports.ox_target:removeZone(1)
         exports.ox_target:removeZone(2)
         exports.ox_target:removeZone(3)
