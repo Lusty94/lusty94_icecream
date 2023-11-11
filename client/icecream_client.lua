@@ -95,7 +95,7 @@ end)
 --Storage Fridge
 RegisterNetEvent("lusty94_icecream:client:StorageFridge", function()
     if onDuty then
-        if Invtype == 'qb' then
+        if InvType == 'qb' then
             TriggerEvent("inventory:client:SetCurrentStash", "PolarIceFridge")
             TriggerServerEvent("inventory:server:OpenInventory", "stash", "PolarIceFridge", {
             maxweight = Config.InteractionLocations.Fridge.StashSize,
