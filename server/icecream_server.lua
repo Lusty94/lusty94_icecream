@@ -41,7 +41,7 @@ end)
 RegisterNetEvent('lusty94_icecream:server:GiveIceCreamCones', function(amount)
     local src = source
     local Player = QBCore.Functions.GetPlayer(src)
-    if Invtype == 'qb' then        
+    if InvType == 'qb' then        
         Player.Functions.AddItem("icecreamcone", amount)
         TriggerClientEvent("inventory:client:ItemBox", src, QBCore.Shared.Items["icecreamcone"], "add")
     elseif InvType == 'ox' then
@@ -406,7 +406,7 @@ end)
 RegisterNetEvent('lusty94_icecream:server:CreateToffeeSmoothie', function()
     local src = source
     local Player = QBCore.Functions.GetPlayer(src)
-    if Invtype == 'qb' then
+    if InvType == 'qb' then
         Player.Functions.RemoveItem("smoothiecup", 1)
             TriggerClientEvent("inventory:client:ItemBox", src, QBCore.Shared.Items["smoothiecup"], "remove")
         Player.Functions.RemoveItem("toffee", 1)
