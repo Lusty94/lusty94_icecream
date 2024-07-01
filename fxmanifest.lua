@@ -8,7 +8,7 @@ author 'Lusty94'
 
 description 'Polar Ice - Ice Cream Shop Job Script For QB-Core'
 
-version '1.1.0'
+version '2.0.0'
 
 
 client_scripts {
@@ -28,10 +28,7 @@ shared_scripts {
 }
 
 escrow_ignore {
-    'shared/config.lua',
-    'shared/menus.lua',
-    'shared/targets.lua',
-    'shared/billing.lua',
-    'client/icecream_client.lua',
-    'server/icecream_server.lua',
+    'shared/**.lua',
+    'client/**.lua',
+    'server/**.lua',
 }

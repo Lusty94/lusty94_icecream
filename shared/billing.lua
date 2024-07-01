@@ -26,6 +26,7 @@ AddEventHandler("lusty94_icecream:server:bill:player", function(playerId, amount
                         TriggerClientEvent('qb-phone:RefreshPhone', billed.PlayerData.source) -- change this to suit your phone event
                         TriggerClientEvent('QBCore:Notify', source, 'Invoice Successfully Sent', 'success')
                         exports['qb-management']:AddMoney(Config.CoreSettings.Job.Name, amount) -- add amount of sale to societ fund for job defined in config, society name needs to be in database tables also
+                        --exports['qb-banking']:AddMoney( Config.CoreSettings.Job.Name,  amount,  'Ice Cream Shop' ) -- uncomment this snippet if using the latest version of qb-core that removes the need for qb-management and uses qb-banking instead
                         TriggerClientEvent('QBCore:Notify', billed.PlayerData.source, 'New Invoice Received From Polar Ice!')
                     else
                         TriggerClientEvent('QBCore:Notify', source, 'Must Be A Valid Amount Above 0!', 'error')

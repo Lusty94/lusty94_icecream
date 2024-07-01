@@ -1,6 +1,27 @@
 local QBCore = exports['qb-core']:GetCoreObject()
 local InvType = Config.CoreSettings.Inventory.Type
+local NotifyType = Config.CoreSettings.Notify.Type
 
+
+--notification function
+local function SendNotify(src, msg, type, time, title)
+    if NotifyType == nil then print("Lusty94_IceCream: NotifyType Not Set in Config.CoreSettings.Notify.Type!") return end
+    if not title then title = "Ice cream" end
+    if not time then time = 5000 end
+    if not type then type = 'success' end
+    if not msg then print("Notification Sent With No Message") return end
+    if NotifyType == 'qb' then
+        TriggerClientEvent('QBCore:Notify', src, msg, type, time)
+    elseif NotifyType == 'okok' then
+        TriggerClientEvent('okokNotify:Alert', src, title, msg, time, type, Config.CoreSettings.Notify.Sound)
+    elseif NotifyType == 'mythic' then
+        TriggerClientEvent('mythic_notify:client:SendAlert', src, { type = type, text = msg, style = { ['background-color'] = '#00FF00', ['color'] = '#FFFFFF' } })
+    elseif NotifyType == 'boii'  then
+        TriggerClientEvent('boii_ui:notify', src, title, msg, type, time)
+    elseif NotifyType == 'ox' then 
+        TriggerClientEvent('ox_lib:notify', src, ({ title = title, description = msg, length = time, type = type, style = 'default'}))
+    end
+end
 
 --Give Smoothie Cup
 RegisterNetEvent('lusty94_icecream:server:GiveSmoothieCup', function(amount)
@@ -8,9 +29,13 @@ RegisterNetEvent('lusty94_icecream:server:GiveSmoothieCup', function(amount)
     local Player = QBCore.Functions.GetPlayer(src)
     if InvType == 'qb' then        
         Player.Functions.AddItem("smoothiecup", amount)
-        TriggerClientEvent("inventory:client:ItemBox", src, QBCore.Shared.Items["smoothiecup"], "add")
+        TriggerClientEvent("inventory:client:ItemBox", src, QBCore.Shared.Items["smoothiecup"], "add", amount)
     elseif InvType == 'ox' then
-        exports.ox_inventory:AddItem(src,"smoothiecup", amount)
+        if exports.ox_inventory:CanCarryItem(src, "smoothiecup", 1) then
+            exports.ox_inventory:AddItem(src,"smoothiecup", amount)
+        else
+            SendNotify(src,"You Can\'t Carry Anymore of This Item!", 'error', 2000)
+        end
     end
 end)
 
@@ -19,8 +44,16 @@ end)
 RegisterNetEvent('lusty94_icecream:server:GiveMug', function(amount)
     local src = source
     local Player = QBCore.Functions.GetPlayer(src)        
+    if InvType == 'qb' then        
         Player.Functions.AddItem("mug", amount)
-        TriggerClientEvent("inventory:client:ItemBox", src, QBCore.Shared.Items["mug"], "add")
+        TriggerClientEvent("inventory:client:ItemBox", src, QBCore.Shared.Items["mug"], "add", amount)
+    elseif InvType == 'ox' then
+        if exports.ox_inventory:CanCarryItem(src, "mug", 1) then
+            exports.ox_inventory:AddItem(src,"mug", amount)
+        else
+            SendNotify(src,"You Can\'t Carry Anymore of This Item!", 'error', 2000)
+        end
+    end
 end)
 
 
@@ -30,22 +63,30 @@ RegisterNetEvent('lusty94_icecream:server:GiveSoftDrinksCup', function(amount)
     local Player = QBCore.Functions.GetPlayer(src)
     if InvType == 'qb' then        
         Player.Functions.AddItem("softdrinkscup", amount)
-        TriggerClientEvent("inventory:client:ItemBox", src, QBCore.Shared.Items["softdrinkscup"], "add")
+        TriggerClientEvent("inventory:client:ItemBox", src, QBCore.Shared.Items["softdrinkscup"], "add", amount)
     elseif InvType == 'ox' then
-        exports.ox_inventory:AddItem(src,"softdrinkscup", amount)
+        if exports.ox_inventory:CanCarryItem(src, "softdrinkscup", 1) then
+            exports.ox_inventory:AddItem(src,"softdrinkscup", amount)
+        else
+            SendNotify(src,"You Can\'t Carry Anymore of This Item!", 'error', 2000)
+        end
     end
 end)
 
 
 --Give Ice Cream Cone
-RegisterNetEvent('lusty94_icecream:server:GiveIceCreamCones', function(amount)
+RegisterNetEvent('lusty94_icecream:server:GiveIceCreamCone', function(amount)
     local src = source
     local Player = QBCore.Functions.GetPlayer(src)
     if InvType == 'qb' then        
         Player.Functions.AddItem("icecreamcone", amount)
-        TriggerClientEvent("inventory:client:ItemBox", src, QBCore.Shared.Items["icecreamcone"], "add")
+        TriggerClientEvent("inventory:client:ItemBox", src, QBCore.Shared.Items["icecreamcone"], "add", amount)
     elseif InvType == 'ox' then
-        exports.ox_inventory:AddItem(src,"icecreamcone", amount)
+        if exports.ox_inventory:CanCarryItem(src, "icecreamcone", 1) then
+            exports.ox_inventory:AddItem(src,"icecreamcone", amount)
+        else
+            SendNotify(src,"You Can\'t Carry Anymore of This Item!", 'error', 2000)
+        end
     end
 end)
 
@@ -82,15 +123,17 @@ RegisterNetEvent('lusty94_icecream:server:CreateVanillaSmoothie', function()
             TriggerClientEvent("inventory:client:ItemBox", src, QBCore.Shared.Items["vanilla"], "remove")
         Player.Functions.RemoveItem("smoothiemix", 1)
             TriggerClientEvent("inventory:client:ItemBox", src, QBCore.Shared.Items["smoothiemix"], "remove")
-            Wait(1000)            
         Player.Functions.AddItem("vanillasmoothie", 1)
             TriggerClientEvent("inventory:client:ItemBox", src, QBCore.Shared.Items["vanillasmoothie"], "add")
     elseif InvType == 'ox' then
-        exports.ox_inventory:RemoveItem(src,"smoothiecup", 1)
-        exports.ox_inventory:RemoveItem(src,"vanilla", 1)
-        exports.ox_inventory:RemoveItem(src,"smoothiemix", 1)
-        Wait(1000)
-        exports.ox_inventory:AdddItem(src,"vanillasmoothie", 1)
+        if exports.ox_inventory:CanCarryItem(src, "vanillasmoothie", 1) then
+            exports.ox_inventory:RemoveItem(src,"smoothiecup", 1)
+            exports.ox_inventory:RemoveItem(src,"vanilla", 1)
+            exports.ox_inventory:RemoveItem(src,"smoothiemix", 1)
+            exports.ox_inventory:AddItem(src,"vanillasmoothie", 1)
+        else
+            SendNotify(src,"You Can\'t Carry Anymore of This Item!", 'error', 2000)
+        end
     end
 end)
 
@@ -123,16 +166,18 @@ RegisterNetEvent('lusty94_icecream:server:CreateChocolateSmoothie', function()
         Player.Functions.RemoveItem("chocolate", 1)
             TriggerClientEvent("inventory:client:ItemBox", src, QBCore.Shared.Items["chocolate"], "remove")
         Player.Functions.RemoveItem("smoothiemix", 1)
-            TriggerClientEvent("inventory:client:ItemBox", src, QBCore.Shared.Items["smoothiemix"], "remove")
-            Wait(1000)
+            TriggerClientEvent("inventory:client:ItemBox", src, QBCore.Shared.Items["smoothiemix"], "remove")            
         Player.Functions.AddItem("chocolatesmoothie", 1)
             TriggerClientEvent("inventory:client:ItemBox", src, QBCore.Shared.Items["chocolatesmoothie"], "add")
     elseif InvType == 'ox' then
-        exports.ox_inventory:RemoveItem(src,"smoothiecup", 1)
-        exports.ox_inventory:RemoveItem(src,"chocolate", 1)
-        exports.ox_inventory:RemoveItem(src,"smoothiemix", 1)
-        Wait(1000)
-        exports.ox_inventory:AdddItem(src,"chocolatesmoothie", 1)
+        if exports.ox_inventory:CanCarryItem(src, "chocolatesmoothie", 1) then
+            exports.ox_inventory:RemoveItem(src,"smoothiecup", 1)
+            exports.ox_inventory:RemoveItem(src,"chocolate", 1)
+            exports.ox_inventory:RemoveItem(src,"smoothiemix", 1)        
+            exports.ox_inventory:AddItem(src,"chocolatesmoothie", 1)
+        else
+            SendNotify(src,"You Can\'t Carry Anymore of This Item!", 'error', 2000)
+        end
     end
 end)
 
@@ -165,16 +210,18 @@ RegisterNetEvent('lusty94_icecream:server:CreateStrawberrySmoothie', function()
         Player.Functions.RemoveItem("strawberry", 1)
             TriggerClientEvent("inventory:client:ItemBox", src, QBCore.Shared.Items["strawberry"], "remove")
         Player.Functions.RemoveItem("smoothiemix", 1)
-            TriggerClientEvent("inventory:client:ItemBox", src, QBCore.Shared.Items["smoothiemix"], "remove")
-            Wait(1000)
+            TriggerClientEvent("inventory:client:ItemBox", src, QBCore.Shared.Items["smoothiemix"], "remove")            
         Player.Functions.AddItem("strawberrysmoothie", 1)
             TriggerClientEvent("inventory:client:ItemBox", src, QBCore.Shared.Items["strawberrysmoothie"], "add")
     elseif InvType == 'ox' then
-        exports.ox_inventory:RemoveItem(src,"smoothiecup", 1)
-        exports.ox_inventory:RemoveItem(src,"strawberry", 1)
-        exports.ox_inventory:RemoveItem(src,"smoothiemix", 1)
-        Wait(1000)
-        exports.ox_inventory:AddItem(src,"strawberrysmoothie", 1)
+        if exports.ox_inventory:CanCarryItem(src, "strawberrysmoothie", 1) then
+            exports.ox_inventory:RemoveItem(src,"smoothiecup", 1)
+            exports.ox_inventory:RemoveItem(src,"strawberry", 1)
+            exports.ox_inventory:RemoveItem(src,"smoothiemix", 1)        
+            exports.ox_inventory:AddItem(src,"strawberrysmoothie", 1)
+        else
+            SendNotify(src,"You Can\'t Carry Anymore of This Item!", 'error', 2000)
+        end
     end
 end)
 
@@ -206,16 +253,19 @@ RegisterNetEvent('lusty94_icecream:server:CreateMintSmoothie', function()
         Player.Functions.RemoveItem("mint", 1)
             TriggerClientEvent("inventory:client:ItemBox", src, QBCore.Shared.Items["mint"], "remove")
         Player.Functions.RemoveItem("smoothiemix", 1)
-            TriggerClientEvent("inventory:client:ItemBox", src, QBCore.Shared.Items["smoothiemix"], "remove")
-            Wait(1000)
+            TriggerClientEvent("inventory:client:ItemBox", src, QBCore.Shared.Items["smoothiemix"], "remove")            
         Player.Functions.AddItem("mintsmoothie", 1)
             TriggerClientEvent("inventory:client:ItemBox", src, QBCore.Shared.Items["mintsmoothie"], "add")
     elseif InvType == 'ox' then
-        exports.ox_inventory:RemoveItem(src,"smoothiecup", 1)
-        exports.ox_inventory:RemoveItem(src,"mint", 1)
-        exports.ox_inventory:RemoveItem(src,"smoothiemix", 1)
-        Wait(1000)
-        exports.ox_inventory:AddItem(src,"mintsmoothie", 1)
+        if exports.ox_inventory:CanCarryItem(src, "mintsmoothie", 1) then
+            exports.ox_inventory:RemoveItem(src,"smoothiecup", 1)
+            exports.ox_inventory:RemoveItem(src,"mint", 1)
+            exports.ox_inventory:RemoveItem(src,"smoothiemix", 1)
+            
+            exports.ox_inventory:AddItem(src,"mintsmoothie", 1)
+        else
+            SendNotify(src,"You Can\'t Carry Anymore of This Item!", 'error', 2000)
+        end
     end
 end)
 
@@ -247,16 +297,19 @@ RegisterNetEvent('lusty94_icecream:server:CreatePistachioSmoothie', function()
         Player.Functions.RemoveItem("pistachio", 1)
             TriggerClientEvent("inventory:client:ItemBox", src, QBCore.Shared.Items["pistachio"], "remove")
         Player.Functions.RemoveItem("smoothiemix", 1)
-            TriggerClientEvent("inventory:client:ItemBox", src, QBCore.Shared.Items["smoothiemix"], "remove")
-            Wait(1000)
+            TriggerClientEvent("inventory:client:ItemBox", src, QBCore.Shared.Items["smoothiemix"], "remove")            
         Player.Functions.AddItem("pistachiosmoothie", 1)
             TriggerClientEvent("inventory:client:ItemBox", src, QBCore.Shared.Items["pistachiosmoothie"], "add")
     elseif InvType == 'ox' then
-        exports.ox_inventory:RemoveItem(src,"smoothiecup", 1)
-        exports.ox_inventory:RemoveItem(src,"pistachio", 1)
-        exports.ox_inventory:RemoveItem(src,"smoothiemix", 1)
-        Wait(1000)
-        exports.ox_inventory:AddItem(src,"pistachiosmoothie", 1)
+        if exports.ox_inventory:CanCarryItem(src, "pistachiosmoothie", 1) then
+            exports.ox_inventory:RemoveItem(src,"smoothiecup", 1)
+            exports.ox_inventory:RemoveItem(src,"pistachio", 1)
+            exports.ox_inventory:RemoveItem(src,"smoothiemix", 1)
+            
+            exports.ox_inventory:AddItem(src,"pistachiosmoothie", 1)
+        else
+            SendNotify(src,"You Can\'t Carry Anymore of This Item!", 'error', 2000)
+        end
     end
 end)
 
@@ -288,16 +341,19 @@ RegisterNetEvent('lusty94_icecream:server:CreateButterScotchSmoothie', function(
         Player.Functions.RemoveItem("butterscotch", 1)
             TriggerClientEvent("inventory:client:ItemBox", src, QBCore.Shared.Items["butterscotch"], "remove")
         Player.Functions.RemoveItem("smoothiemix", 1)
-            TriggerClientEvent("inventory:client:ItemBox", src, QBCore.Shared.Items["smoothiemix"], "remove")
-            Wait(1000)
+            TriggerClientEvent("inventory:client:ItemBox", src, QBCore.Shared.Items["smoothiemix"], "remove")            
         Player.Functions.AddItem("butterscotchsmoothie", 1)
             TriggerClientEvent("inventory:client:ItemBox", src, QBCore.Shared.Items["butterscotchsmoothie"], "add")
     elseif InvType == 'ox' then
-        exports.ox_inventory:RemoveItem(src,"smoothiecup", 1)
-        exports.ox_inventory:RemoveItem(src,"butterscotch", 1)
-        exports.ox_inventory:RemoveItem(src,"smoothiemix", 1)
-        Wait(1000)
-        exports.ox_inventory:AddItem(src,"butterscotchsmoothie", 1)
+        if exports.ox_inventory:CanCarryItem(src, "butterscotchsmoothie", 1) then
+            exports.ox_inventory:RemoveItem(src,"smoothiecup", 1)
+            exports.ox_inventory:RemoveItem(src,"butterscotch", 1)
+            exports.ox_inventory:RemoveItem(src,"smoothiemix", 1)
+            
+            exports.ox_inventory:AddItem(src,"butterscotchsmoothie", 1)
+        else
+            SendNotify(src,"You Can\'t Carry Anymore of This Item!", 'error', 2000)
+        end
     end
 end)
 
@@ -329,16 +385,20 @@ RegisterNetEvent('lusty94_icecream:server:CreateSaltedCaramelSmoothie', function
         Player.Functions.RemoveItem("saltedcaramel", 1)
             TriggerClientEvent("inventory:client:ItemBox", src, QBCore.Shared.Items["saltedcaramel"], "remove")
         Player.Functions.RemoveItem("smoothiemix", 1)
-            TriggerClientEvent("inventory:client:ItemBox", src, QBCore.Shared.Items["smoothiemix"], "remove")
-            Wait(1000)
+            TriggerClientEvent("inventory:client:ItemBox", src, QBCore.Shared.Items["smoothiemix"], "remove")            
         Player.Functions.AddItem("saltedcaramelsmoothie", 1)
             TriggerClientEvent("inventory:client:ItemBox", src, QBCore.Shared.Items["saltedcaramelsmoothie"], "add")
     elseif InvType == 'ox' then
-        exports.ox_inventory:RemoveItem(src,"smoothiecup", 1)
-        exports.ox_inventory:RemoveItem(src,"saltedcaramel", 1)
-        exports.ox_inventory:RemoveItem(src,"smoothiemix", 1)
-        Wait(1000)
-        exports.ox_inventory:AddItem(src,"saltedcaramelsmoothie", 1)
+        if exports.ox_inventory:CanCarryItem(src, "saltedcaramelsmoothie", 1) then
+            exports.ox_inventory:RemoveItem(src,"smoothiecup", 1)
+            exports.ox_inventory:RemoveItem(src,"saltedcaramel", 1)
+            exports.ox_inventory:RemoveItem(src,"smoothiemix", 1)
+            
+            exports.ox_inventory:AddItem(src,"saltedcaramelsmoothie", 1)
+
+        else
+            SendNotify(src,"You Can\'t Carry Anymore of This Item!", 'error', 2000)
+        end
     end
 end)
 
@@ -370,16 +430,19 @@ RegisterNetEvent('lusty94_icecream:server:CreateBubblegumSmoothie', function()
         Player.Functions.RemoveItem("bubblegum", 1)
             TriggerClientEvent("inventory:client:ItemBox", src, QBCore.Shared.Items["bubblegum"], "remove")
         Player.Functions.RemoveItem("smoothiemix", 1)
-            TriggerClientEvent("inventory:client:ItemBox", src, QBCore.Shared.Items["smoothiemix"], "remove")
-            Wait(1000)
+            TriggerClientEvent("inventory:client:ItemBox", src, QBCore.Shared.Items["smoothiemix"], "remove")            
         Player.Functions.AddItem("bubblegumsmoothie", 1)
             TriggerClientEvent("inventory:client:ItemBox", src, QBCore.Shared.Items["bubblegumsmoothie"], "add")
     elseif InvType == 'ox' then
-        exports.ox_inventory:RemoveItem(src,"smoothiecup", 1)
-        exports.ox_inventory:RemoveItem(src,"bubblegum", 1)
-        exports.ox_inventory:RemoveItem(src,"smoothiemix", 1)
-        Wait(1000)
-        exports.ox_inventory:AddItem(src,"bubblegumsmoothie", 1)
+        if exports.ox_inventory:CanCarryItem(src, "bubblegumsmoothie", 1) then
+            exports.ox_inventory:RemoveItem(src,"smoothiecup", 1)
+            exports.ox_inventory:RemoveItem(src,"bubblegum", 1)
+            exports.ox_inventory:RemoveItem(src,"smoothiemix", 1)
+            
+            exports.ox_inventory:AddItem(src,"bubblegumsmoothie", 1)
+        else
+            SendNotify(src,"You Can\'t Carry Anymore of This Item!", 'error', 2000)
+        end
     end
 end)
 
@@ -412,16 +475,19 @@ RegisterNetEvent('lusty94_icecream:server:CreateToffeeSmoothie', function()
         Player.Functions.RemoveItem("toffee", 1)
             TriggerClientEvent("inventory:client:ItemBox", src, QBCore.Shared.Items["toffee"], "remove")
         Player.Functions.RemoveItem("smoothiemix", 1)
-            TriggerClientEvent("inventory:client:ItemBox", src, QBCore.Shared.Items["smoothiemix"], "remove")
-            Wait(1000)
+            TriggerClientEvent("inventory:client:ItemBox", src, QBCore.Shared.Items["smoothiemix"], "remove")            
         Player.Functions.AddItem("toffeesmoothie", 1)
             TriggerClientEvent("inventory:client:ItemBox", src, QBCore.Shared.Items["toffeesmoothie"], "add")
     elseif InvType == 'ox' then
-        exports.ox_inventory:RemoveItem(src,"smoothiecup", 1)
-        exports.ox_inventory:RemoveItem(src,"toffee", 1)
-        exports.ox_inventory:RemoveItem(src,"smoothiemix", 1)
-        Wait(1000)
-        exports.ox_inventory:AddItem(src,"toffeesmoothie", 1)
+        if exports.ox_inventory:CanCarryItem(src, "toffeesmoothie", 1) then
+            exports.ox_inventory:RemoveItem(src,"smoothiecup", 1)
+            exports.ox_inventory:RemoveItem(src,"toffee", 1)
+            exports.ox_inventory:RemoveItem(src,"smoothiemix", 1)
+            
+            exports.ox_inventory:AddItem(src,"toffeesmoothie", 1)
+        else
+            SendNotify(src,"You Can\'t Carry Anymore of This Item!", 'error', 2000)
+        end
     end
 end)
 
@@ -453,16 +519,19 @@ RegisterNetEvent('lusty94_icecream:server:CreateCookieDoughSmoothie', function()
         Player.Functions.RemoveItem("cookiedough", 1)
             TriggerClientEvent("inventory:client:ItemBox", src, QBCore.Shared.Items["cookiedough"], "remove")
         Player.Functions.RemoveItem("smoothiemix", 1)
-            TriggerClientEvent("inventory:client:ItemBox", src, QBCore.Shared.Items["smoothiemix"], "remove")
-            Wait(1000)
+            TriggerClientEvent("inventory:client:ItemBox", src, QBCore.Shared.Items["smoothiemix"], "remove")            
         Player.Functions.AddItem("cookiedoughsmoothie", 1)
             TriggerClientEvent("inventory:client:ItemBox", src, QBCore.Shared.Items["cookiedoughsmoothie"], "add")
     elseif InvType == 'ox' then
-        exports.ox_inventory:RemoveItem(src,"smoothiecup", 1)
-        exports.ox_inventory:RemoveItem(src,"cookiedough", 1)
-        exports.ox_inventory:RemoveItem(src,"smoothiemix", 1)
-        Wait(1000)
-        exports.ox_inventory:AddItem(src,"cookiedoughsmoothie", 1)
+        if exports.ox_inventory:CanCarryItem(src, "cookiedoughmoothie", 1) then
+            exports.ox_inventory:RemoveItem(src,"smoothiecup", 1)
+            exports.ox_inventory:RemoveItem(src,"cookiedough", 1)
+            exports.ox_inventory:RemoveItem(src,"smoothiemix", 1)
+            
+            exports.ox_inventory:AddItem(src,"cookiedoughsmoothie", 1)
+        else
+            SendNotify(src,"You Can\'t Carry Anymore of This Item!", 'error', 2000)
+        end
     end
 end)
 
@@ -505,8 +574,12 @@ RegisterNetEvent('lusty94_icecream:server:CreateTea', function()
         Player.Functions.AddItem("tea", 1)
             TriggerClientEvent("inventory:client:ItemBox", src, QBCore.Shared.Items["tea"], "add")
     elseif InvType == 'ox' then
-        exports.ox_inventory:RemoveItem(src,"mug", 1)
-        exports.ox_inventory:AddItem(src,"tea", 1)
+        if exports.ox_inventory:CanCarryItem(src, "tea", 1) then
+            exports.ox_inventory:RemoveItem(src,"mug", 1)
+            exports.ox_inventory:AddItem(src,"tea", 1)
+        else
+            SendNotify(src,"You Can\'t Carry Anymore of This Item!", 'error', 2000)
+        end
     end
 end)
 
@@ -520,8 +593,12 @@ RegisterNetEvent('lusty94_icecream:server:CreateCoffee', function()
         Player.Functions.AddItem("coffee", 1)
             TriggerClientEvent("inventory:client:ItemBox", src, QBCore.Shared.Items["coffee"], "add")
     elseif InvType == 'ox' then
-        exports.ox_inventory:RemoveItem(src,"mug", 1)
-        exports.ox_inventory:AddItem(src,"coffee", 1)
+        if exports.ox_inventory:CanCarryItem(src, "coffee", 1) then
+            exports.ox_inventory:RemoveItem(src,"mug", 1)
+            exports.ox_inventory:AddItem(src,"coffee", 1)
+        else
+            SendNotify(src,"You Can\'t Carry Anymore of This Item!", 'error', 2000)
+        end
     end
 end)
 
@@ -535,8 +612,12 @@ RegisterNetEvent('lusty94_icecream:server:CreateHotChocolate', function()
         Player.Functions.AddItem("hotchocolate", 1)
             TriggerClientEvent("inventory:client:ItemBox", src, QBCore.Shared.Items["hotchocolate"], "add")
     elseif InvType == 'ox' then
-        exports.ox_inventory:RemoveItem(src,"mug", 1)
-        exports.ox_inventory:AddItem(src,"hotchocolate", 1)
+        if exports.ox_inventory:CanCarryItem(src, "hotchocolate", 1) then
+            exports.ox_inventory:RemoveItem(src,"mug", 1)
+            exports.ox_inventory:AddItem(src,"hotchocolate", 1)
+        else
+            SendNotify(src,"You Can\'t Carry Anymore of This Item!", 'error', 2000)
+        end
     end
 end)
 
@@ -575,8 +656,12 @@ RegisterNetEvent('lusty94_icecream:server:CreateCola', function()
         Player.Functions.AddItem("cola", 1)
             TriggerClientEvent("inventory:client:ItemBox", src, QBCore.Shared.Items["cola"], "add")
     elseif InvType == 'ox' then
-        exports.ox_inventory:RemoveItem(src,"softdrinkscup", 1)
-        exports.ox_inventory:AddItem(src,"cola", 1)
+        if exports.ox_inventory:CanCarryItem(src, "cola", 1) then
+            exports.ox_inventory:RemoveItem(src,"softdrinkscup", 1)
+            exports.ox_inventory:AddItem(src,"cola", 1)
+        else
+            SendNotify(src,"You Can\'t Carry Anymore of This Item!", 'error', 2000)
+        end
     end
 end)
 
@@ -590,8 +675,12 @@ RegisterNetEvent('lusty94_icecream:server:CreateLemonade', function()
         Player.Functions.AddItem("lemonade", 1)
             TriggerClientEvent("inventory:client:ItemBox", src, QBCore.Shared.Items["lemonade"], "add")
     elseif InvType == 'ox' then
-        exports.ox_inventory:RemoveItem(src,"softdrinkscup", 1)
-        exports.ox_inventory:AddItem(src,"lemonade", 1)
+        if exports.ox_inventory:CanCarryItem(src, "lemonade", 1) then
+            exports.ox_inventory:RemoveItem(src,"softdrinkscup", 1)
+            exports.ox_inventory:AddItem(src,"lemonade", 1)
+        else
+            SendNotify(src,"You Can\'t Carry Anymore of This Item!", 'error', 2000)
+        end
     end
 end)
 
@@ -605,8 +694,12 @@ RegisterNetEvent('lusty94_icecream:server:CreateOrangeSoda', function()
         Player.Functions.AddItem("orangesoda", 1)
             TriggerClientEvent("inventory:client:ItemBox", src, QBCore.Shared.Items["orangesoda"], "add")
     elseif InvType == 'ox' then
-        exports.ox_inventory:RemoveItem(src,"softdrinkscup", 1)
-        exports.ox_inventory:AddItem(src,"orangesoda", 1)
+        if exports.ox_inventory:CanCarryItem(src, "orangesoda", 1) then
+            exports.ox_inventory:RemoveItem(src,"softdrinkscup", 1)
+            exports.ox_inventory:AddItem(src,"orangesoda", 1)
+        else
+            SendNotify(src,"You Can\'t Carry Anymore of This Item!", 'error', 2000)
+        end
     end
 end)
 
@@ -655,10 +748,14 @@ RegisterNetEvent('lusty94_icecream:server:CreateVanillaIceCream', function()
         Player.Functions.AddItem("vanillaicecream", 1)
             TriggerClientEvent("inventory:client:ItemBox", src, QBCore.Shared.Items["vanillaicecream"], "add")
     elseif InvType == 'ox' then
-        exports.ox_inventory:RemoveItem(src,"icecreamcone", 1)
-        exports.ox_inventory:RemoveItem(src,"vanilla", 1)
-        exports.ox_inventory:RemoveItem(src,"softscoopmix", 1)
-        exports.ox_inventory:AddItem(src,"vanillaicecream", 1)
+        if exports.ox_inventory:CanCarryItem(src, "vanillaicecream", 1) then
+            exports.ox_inventory:RemoveItem(src,"icecreamcone", 1)
+            exports.ox_inventory:RemoveItem(src,"vanilla", 1)
+            exports.ox_inventory:RemoveItem(src,"softscoopmix", 1)
+            exports.ox_inventory:AddItem(src,"vanillaicecream", 1)
+        else
+            SendNotify(src,"You Can\'t Carry Anymore of This Item!", 'error', 2000)
+        end
     end
 end)
 
@@ -692,10 +789,14 @@ RegisterNetEvent('lusty94_icecream:server:CreateChocolateIceCream', function()
         Player.Functions.AddItem("chocolateicecream", 1)
             TriggerClientEvent("inventory:client:ItemBox", src, QBCore.Shared.Items["chocolateicecream"], "add")
     elseif InvType == 'ox' then
-        exports.ox_inventory:RemoveItem(src,"icecreamcone", 1)
-        exports.ox_inventory:RemoveItem(src,"chocolate", 1)
-        exports.ox_inventory:RemoveItem(src,"softscoopmix", 1)
-        exports.ox_inventory:AddItem(src,"chocolateicecream", 1)
+        if exports.ox_inventory:CanCarryItem(src, "chocolateicecream", 1) then
+            exports.ox_inventory:RemoveItem(src,"icecreamcone", 1)
+            exports.ox_inventory:RemoveItem(src,"chocolate", 1)
+            exports.ox_inventory:RemoveItem(src,"softscoopmix", 1)
+            exports.ox_inventory:AddItem(src,"chocolateicecream", 1)
+        else
+            SendNotify(src,"You Can\'t Carry Anymore of This Item!", 'error', 2000)
+        end
     end
 end)
 
@@ -729,10 +830,14 @@ RegisterNetEvent('lusty94_icecream:server:CreateStrawberryIceCream', function()
         Player.Functions.AddItem("strawberryicecream", 1)
             TriggerClientEvent("inventory:client:ItemBox", src, QBCore.Shared.Items["strawberryicecream"], "add")
     elseif InvType == 'ox' then
-        exports.ox_inventory:RemoveItem(src,"icecreamcone", 1)
-        exports.ox_inventory:RemoveItem(src,"strawberry", 1)
-        exports.ox_inventory:RemoveItem(src,"softscoopmix", 1)
-        exports.ox_inventory:AddItem(src,"strawberryicecream", 1)
+        if exports.ox_inventory:CanCarryItem(src, "strawberryicecream", 1) then
+            exports.ox_inventory:RemoveItem(src,"icecreamcone", 1)
+            exports.ox_inventory:RemoveItem(src,"strawberry", 1)
+            exports.ox_inventory:RemoveItem(src,"softscoopmix", 1)
+            exports.ox_inventory:AddItem(src,"strawberryicecream", 1)
+        else
+            SendNotify(src,"You Can\'t Carry Anymore of This Item!", 'error', 2000)
+        end
     end
 end)
 
@@ -766,10 +871,14 @@ RegisterNetEvent('lusty94_icecream:server:CreateMintIceCream', function()
         Player.Functions.AddItem("minticecream", 1)
             TriggerClientEvent("inventory:client:ItemBox", src, QBCore.Shared.Items["minticecream"], "add")
     elseif InvType == 'ox' then
-        exports.ox_inventory:RemoveItem(src,"icecreamcone", 1)
-        exports.ox_inventory:RemoveItem(src,"mint", 1)
-        exports.ox_inventory:RemoveItem(src,"softscoopmix", 1)
-        exports.ox_inventory:AddItem(src,"minticecream", 1)
+        if exports.ox_inventory:CanCarryItem(src, "minticecream", 1) then
+            exports.ox_inventory:RemoveItem(src,"icecreamcone", 1)
+            exports.ox_inventory:RemoveItem(src,"mint", 1)
+            exports.ox_inventory:RemoveItem(src,"softscoopmix", 1)
+            exports.ox_inventory:AddItem(src,"minticecream", 1)
+        else
+            SendNotify(src,"You Can\'t Carry Anymore of This Item!", 'error', 2000)
+        end
     end
 end)
 
@@ -803,10 +912,14 @@ RegisterNetEvent('lusty94_icecream:server:CreatePistachioIceCream', function()
         Player.Functions.AddItem("pistachioicecream", 1)
             TriggerClientEvent("inventory:client:ItemBox", src, QBCore.Shared.Items["pistachioicecream"], "add")
     elseif InvType == 'ox' then
-        exports.ox_inventory:RemoveItem(src,"icecreamcone", 1)
-        exports.ox_inventory:RemoveItem(src,"pistachio", 1)
-        exports.ox_inventory:RemoveItem(src,"softscoopmix", 1)
-        exports.ox_inventory:AddItem(src,"pistachioicecream", 1)
+        if exports.ox_inventory:CanCarryItem(src, "pistachioicecream", 1) then
+            exports.ox_inventory:RemoveItem(src,"icecreamcone", 1)
+            exports.ox_inventory:RemoveItem(src,"pistachio", 1)
+            exports.ox_inventory:RemoveItem(src,"softscoopmix", 1)
+            exports.ox_inventory:AddItem(src,"pistachioicecream", 1)
+        else
+            SendNotify(src,"You Can\'t Carry Anymore of This Item!", 'error', 2000)
+        end
     end
 end)
 
@@ -840,10 +953,14 @@ RegisterNetEvent('lusty94_icecream:server:CreateButterScotchIceCream', function(
         Player.Functions.AddItem("butterscotchicecream", 1)
             TriggerClientEvent("inventory:client:ItemBox", src, QBCore.Shared.Items["butterscotchicecream"], "add")
     elseif InvType == 'ox' then
-        exports.ox_inventory:RemoveItem(src,"icecreamcone", 1)
-        exports.ox_inventory:RemoveItem(src,"butterscotch", 1)
-        exports.ox_inventory:RemoveItem(src,"softscoopmix", 1)
-        exports.ox_inventory:AddItem(src,"butterscotchicecream", 1)
+        if exports.ox_inventory:CanCarryItem(src, "butterscotchicecream", 1) then
+            exports.ox_inventory:RemoveItem(src,"icecreamcone", 1)
+            exports.ox_inventory:RemoveItem(src,"butterscotch", 1)
+            exports.ox_inventory:RemoveItem(src,"softscoopmix", 1)
+            exports.ox_inventory:AddItem(src,"butterscotchicecream", 1)
+        else
+            SendNotify(src,"You Can\'t Carry Anymore of This Item!", 'error', 2000)
+        end
     end
 end)
 
@@ -877,10 +994,14 @@ RegisterNetEvent('lusty94_icecream:server:CreateSaltedCaramelIceCream', function
         Player.Functions.AddItem("saltedcaramelicecream", 1)
             TriggerClientEvent("inventory:client:ItemBox", src, QBCore.Shared.Items["saltedcaramelicecream"], "add")
     elseif InvType == 'ox' then
-        exports.ox_inventory:RemoveItem(src,"icecreamcone", 1)
-        exports.ox_inventory:RemoveItem(src,"saltedcaramel", 1)
-        exports.ox_inventory:RemoveItem(src,"softscoopmix", 1)
-        exports.ox_inventory:AddItem(src,"saltedcaramelicecream", 1)
+        if exports.ox_inventory:CanCarryItem(src, "saltedcaramelicecream", 1) then
+            exports.ox_inventory:RemoveItem(src,"icecreamcone", 1)
+            exports.ox_inventory:RemoveItem(src,"saltedcaramel", 1)
+            exports.ox_inventory:RemoveItem(src,"softscoopmix", 1)
+            exports.ox_inventory:AddItem(src,"saltedcaramelicecream", 1)
+        else
+            SendNotify(src,"You Can\'t Carry Anymore of This Item!", 'error', 2000)
+        end
     end
 end)
 
@@ -914,10 +1035,14 @@ RegisterNetEvent('lusty94_icecream:server:CreateBubblegumIceCream', function()
         Player.Functions.AddItem("bubblegumicecream", 1)
             TriggerClientEvent("inventory:client:ItemBox", src, QBCore.Shared.Items["bubblegumicecream"], "add")
     elseif InvType == 'ox' then
-        exports.ox_inventory:RemoveItem(src,"icecreamcone", 1)
-        exports.ox_inventory:RemoveItem(src,"bubblegum", 1)
-        exports.ox_inventory:RemoveItem(src,"softscoopmix", 1)
-        exports.ox_inventory:AddItem(src,"bubblegumicecream", 1)
+        if exports.ox_inventory:CanCarryItem(src, "bubblegumicecream", 1) then
+            exports.ox_inventory:RemoveItem(src,"icecreamcone", 1)
+            exports.ox_inventory:RemoveItem(src,"bubblegum", 1)
+            exports.ox_inventory:RemoveItem(src,"softscoopmix", 1)
+            exports.ox_inventory:AddItem(src,"bubblegumicecream", 1)
+        else
+            SendNotify(src,"You Can\'t Carry Anymore of This Item!", 'error', 2000)
+        end
     end
 end)
 
@@ -951,10 +1076,14 @@ RegisterNetEvent('lusty94_icecream:server:CreateToffeeIceCream', function()
         Player.Functions.AddItem("toffeeicecream", 1)
             TriggerClientEvent("inventory:client:ItemBox", src, QBCore.Shared.Items["toffeeicecream"], "add")
     elseif InvType == 'ox' then
-        exports.ox_inventory:RemoveItem(src,"icecreamcone", 1)
-        exports.ox_inventory:RemoveItem(src,"toffee", 1)
-        exports.ox_inventory:RemoveItem(src,"softscoopmix", 1)
-        exports.ox_inventory:AddItem(src,"toffeeicecream", 1)
+        if exports.ox_inventory:CanCarryItem(src, "toffeeicecream", 1) then
+            exports.ox_inventory:RemoveItem(src,"icecreamcone", 1)
+            exports.ox_inventory:RemoveItem(src,"toffee", 1)
+            exports.ox_inventory:RemoveItem(src,"softscoopmix", 1)
+            exports.ox_inventory:AddItem(src,"toffeeicecream", 1)
+        else
+            SendNotify(src,"You Can\'t Carry Anymore of This Item!", 'error', 2000)
+        end
     end
 end)
 
@@ -988,10 +1117,14 @@ RegisterNetEvent('lusty94_icecream:server:CreateCookieDoughIceCream', function()
         Player.Functions.AddItem("cookiedoughicecream", 1)
             TriggerClientEvent("inventory:client:ItemBox", src, QBCore.Shared.Items["cookiedoughicecream"], "add")
     elseif InvType == 'ox' then
-        exports.ox_inventory:RemoveItem(src,"icecreamcone", 1)
-        exports.ox_inventory:RemoveItem(src,"cookiedough", 1)
-        exports.ox_inventory:RemoveItem(src,"softscoopmix", 1)
-        exports.ox_inventory:AddItem(src,"cookiedoughicecream", 1)
+        if exports.ox_inventory:CanCarryItem(src, "cookiedoughicecream", 1) then
+            exports.ox_inventory:RemoveItem(src,"icecreamcone", 1)
+            exports.ox_inventory:RemoveItem(src,"cookiedough", 1)
+            exports.ox_inventory:RemoveItem(src,"softscoopmix", 1)
+            exports.ox_inventory:AddItem(src,"cookiedoughicecream", 1)
+        else
+            SendNotify(src,"You Can\'t Carry Anymore of This Item!", 'error', 2000)
+        end
     end
 end)
 
@@ -1004,86 +1137,163 @@ end)
 
 
 if Config.UseJimConsumables then
-
-        local foodTable = {
-            ["vanillaicecream"]             = { emote = "icecream1", canRun = false, time = math.random(5000, 6000), stress = math.random(2, 4), heal = 0, armor = 0, type = "food", stats = { hunger = math.random(30,50), }},
-            ["chocolateicecream"]           = { emote = "icecream2", canRun = false, time = math.random(5000, 6000), stress = math.random(2, 4), heal = 0, armor = 0, type = "food", stats = { hunger = math.random(30,50), }},
-            ["strawberryicecream"]          = { emote = "icecream3", canRun = false, time = math.random(5000, 6000), stress = math.random(2, 4), heal = 0, armor = 0, type = "food", stats = { hunger = math.random(30,50), }},
-            ["minticecream"]                = { emote = "icecream4", canRun = false, time = math.random(5000, 6000), stress = math.random(2, 4), heal = 0, armor = 0, type = "food", stats = { hunger = math.random(30,50), }},
-            ["pistachioicecream"]           = { emote = "icecream5", canRun = false, time = math.random(5000, 6000), stress = math.random(2, 4), heal = 0, armor = 0, type = "food", stats = { hunger = math.random(30,50), }},
-            ["butterscotchicecream"]        = { emote = "icecream6", canRun = false, time = math.random(5000, 6000), stress = math.random(2, 4), heal = 0, armor = 0, type = "food", stats = { hunger = math.random(30,50), }},
-            ["saltedcaramelicecream"]       = { emote = "icecream7", canRun = false, time = math.random(5000, 6000), stress = math.random(2, 4), heal = 0, armor = 0, type = "food", stats = { hunger = math.random(30,50), }},
-            ["bubblegumicecream"]           = { emote = "icecream8", canRun = false, time = math.random(5000, 6000), stress = math.random(2, 4), heal = 0, armor = 0, type = "food", stats = { hunger = math.random(30,50), }},
-            ["toffeeicecream"]              = { emote = "icecream9", canRun = false, time = math.random(5000, 6000), stress = math.random(2, 4), heal = 0, armor = 0, type = "food", stats = { hunger = math.random(30,50), }},
-            ["cookiedoughicecream"]         = { emote = "icecream10", canRun = false, time = math.random(5000, 6000), stress = math.random(2, 4), heal = 0, armor = 0, type = "food", stats = { hunger = math.random(30,50), }},
-            ["vanillasmoothie"]             = { emote = "smoothie1", canRun = false, time = math.random(5000, 6000), stress = math.random(2, 4), heal = 0, armor = 0, type = "drink", stats = { thirst = math.random(30,50), }},
-            ["chocolatesmoothie"]           = { emote = "smoothie2", canRun = false, time = math.random(5000, 6000), stress = math.random(2, 4), heal = 0, armor = 0, type = "drink", stats = { thirst = math.random(30,50), }},
-            ["strawberrysmoothie"]          = { emote = "smoothie3", canRun = false, time = math.random(5000, 6000), stress = math.random(2, 4), heal = 0, armor = 0, type = "drink", stats = { thirst = math.random(30,50), }},
-            ["mintsmoothie"]                = { emote = "smoothie4", canRun = false, time = math.random(5000, 6000), stress = math.random(2, 4), heal = 0, armor = 0, type = "drink", stats = { thirst = math.random(30,50), }},
-            ["pistachiosmoothie"]           = { emote = "smoothie5", canRun = false, time = math.random(5000, 6000), stress = math.random(2, 4), heal = 0, armor = 0, type = "drink", stats = { thirst = math.random(30,50), }},
-            ["butterscotchsmoothie"]        = { emote = "smoothie6", canRun = false, time = math.random(5000, 6000), stress = math.random(2, 4), heal = 0, armor = 0, type = "drink", stats = { thirst = math.random(30,50), }},
-            ["saltedcaramelsmoothie"]       = { emote = "smoothie7", canRun = false, time = math.random(5000, 6000), stress = math.random(2, 4), heal = 0, armor = 0, type = "drink", stats = { thirst = math.random(30,50), }},
-            ["bubblegumsmoothie"]           = { emote = "smoothie8", canRun = false, time = math.random(5000, 6000), stress = math.random(2, 4), heal = 0, armor = 0, type = "drink", stats = { thirst = math.random(30,50), }},
-            ["toffeesmoothie"]              = { emote = "smoothie9", canRun = false, time = math.random(5000, 6000), stress = math.random(2, 4), heal = 0, armor = 0, type = "drink", stats = { thirst = math.random(30,50), }},
-            ["cookiedoughsmoothie"]         = { emote = "smoothie10", canRun = false, time = math.random(5000, 6000), stress = math.random(2, 4), heal = 0, armor = 0, type = "drink", stats = { thirst = math.random(30,50), }},
-            ["vanillacupcake"]              = { emote = "cupcake1", canRun = false, time = math.random(5000, 6000), stress = math.random(2, 4), heal = 0, armor = 0, type = "food", stats = { hunger = math.random(30,50), }},
-            ["chocolatecupcake"]            = { emote = "cupcake2", canRun = false, time = math.random(5000, 6000), stress = math.random(2, 4), heal = 0, armor = 0, type = "food", stats = { hunger = math.random(30,50), }},
-            ["chocolatebar"]                = { emote = "chocbar", canRun = false, time = math.random(5000, 6000), stress = math.random(2, 4), heal = 0, armor = 0, type = "food", stats = { hunger = math.random(30,50), }},
-            ["jamdoughnut"]                 = { emote = "doughnut1", canRun = false, time = math.random(5000, 6000), stress = math.random(2, 4), heal = 0, armor = 0, type = "food", stats = { hunger = math.random(30,50), }},
-            ["sugardoughnut"]               = { emote = "doughnut2", canRun = false, time = math.random(5000, 6000), stress = math.random(2, 4), heal = 0, armor = 0, type = "food", stats = { hunger = math.random(30,50), }},
-            ["custarddoughnut"]             = { emote = "doughnut3", canRun = false, time = math.random(5000, 6000), stress = math.random(2, 4), heal = 0, armor = 0, type = "food", stats = { hunger = math.random(30,50), }},
-            ["chocolatedoughnut"]           = { emote = "doughnut4", canRun = false, time = math.random(5000, 6000), stress = math.random(2, 4), heal = 0, armor = 0, type = "food", stats = { hunger = math.random(30,50), }},
-            ["tea"]                         = { emote = "drink1", canRun = false, time = math.random(5000, 6000), stress = math.random(2, 4), heal = 0, armor = 0, type = "drink", stats = { thirst = math.random(30,50), }},
-            ["cofee"]                       = { emote = "drink2", canRun = false, time = math.random(5000, 6000), stress = math.random(2, 4), heal = 0, armor = 0, type = "drink", stats = { thirst = math.random(30,50), }},
-            ["hotchocolate"]                = { emote = "drink3", canRun = false, time = math.random(5000, 6000), stress = math.random(2, 4), heal = 0, armor = 0, type = "drink", stats = { thirst = math.random(30,50), }},
-            ["cola"]                        = { emote = "drink4", canRun = false, time = math.random(5000, 6000), stress = math.random(2, 4), heal = 0, armor = 0, type = "drink", stats = { thirst = math.random(30,50), }},
-            ["lemonade"]                    = { emote = "drink5", canRun = false, time = math.random(5000, 6000), stress = math.random(2, 4), heal = 0, armor = 0, type = "drink", stats = { thirst = math.random(30,50), }},
-            ["orangesoda"]                  = { emote = "drink6", canRun = false, time = math.random(5000, 6000), stress = math.random(2, 4), heal = 0, armor = 0, type = "drink", stats = { thirst = math.random(30,50), }},
-        }
-
-        local emoteTable = {
-            ["icecream1"] = {"mp_player_inteat@burger",                     "mp_player_int_eat_burger",     "Vanilla Ice Cream",            AnimationOptions = { Prop = "bzzz_icecream_cherry",             PropBone = 18905, PropPlacement = {0.14, 0.03, 0.01, 85.0, 70.0, -203.0}, EmoteMoving = true, EmoteLoop = true, }},
-            ["icecream2"] = {"mp_player_inteat@burger",                     "mp_player_int_eat_burger",     "Chocolate Ice Cream",          AnimationOptions = { Prop = "bzzz_icecream_chocolate",          PropBone = 18905, PropPlacement = {0.14, 0.03, 0.01, 85.0, 70.0, -203.0}, EmoteMoving = true, EmoteLoop = true, }},
-            ["icecream3"] = {"mp_player_inteat@burger",                     "mp_player_int_eat_burger",     "Strawberry Ice Cream",         AnimationOptions = { Prop = "bzzz_icecream_cherry",             PropBone = 18905, PropPlacement = {0.14, 0.03, 0.01, 85.0, 70.0, -203.0}, EmoteMoving = true, EmoteLoop = true, }},
-            ["icecream4"] = {"mp_player_inteat@burger",                     "mp_player_int_eat_burger",     "Mint Ice Cream",               AnimationOptions = { Prop = "bzzz_icecream_cherry",             PropBone = 18905, PropPlacement = {0.14, 0.03, 0.01, 85.0, 70.0, -203.0}, EmoteMoving = true, EmoteLoop = true, }},
-            ["icecream5"] = {"mp_player_inteat@burger",                     "mp_player_int_eat_burger",     "Pistachio Ice Cream",          AnimationOptions = { Prop = "bzzz_icecream_chocolate",          PropBone = 18905, PropPlacement = {0.14, 0.03, 0.01, 85.0, 70.0, -203.0}, EmoteMoving = true, EmoteLoop = true, }},
-            ["icecream6"] = {"mp_player_inteat@burger",                     "mp_player_int_eat_burger",     "Butterscotch Ice Cream",       AnimationOptions = { Prop = "bzzz_icecream_lemon",              PropBone = 18905, PropPlacement = {0.14, 0.03, 0.01, 85.0, 70.0, -203.0}, EmoteMoving = true, EmoteLoop = true, }},
-            ["icecream7"] = {"mp_player_inteat@burger",                     "mp_player_int_eat_burger",     "Salted Caramel Ice Cream",     AnimationOptions = { Prop = "bzzz_icecream_cherry",             PropBone = 18905, PropPlacement = {0.14, 0.03, 0.01, 85.0, 70.0, -203.0}, EmoteMoving = true, EmoteLoop = true, }},
-            ["icecream8"] = {"mp_player_inteat@burger",                     "mp_player_int_eat_burger",     "Bubblegum Ice Cream",          AnimationOptions = { Prop = "bzzz_icecream_lemon",              PropBone = 18905, PropPlacement = {0.14, 0.03, 0.01, 85.0, 70.0, -203.0}, EmoteMoving = true, EmoteLoop = true, }},
-            ["icecream9"] = {"mp_player_inteat@burger",                     "mp_player_int_eat_burger",     "Toffee Ice Cream",             AnimationOptions = { Prop = "bzzz_icecream_cherry",             PropBone = 18905, PropPlacement = {0.14, 0.03, 0.01, 85.0, 70.0, -203.0}, EmoteMoving = true, EmoteLoop = true, }},
-            ["icecream10"] = {"mp_player_inteat@burger",                    "mp_player_int_eat_burger",     "Cookie Dough Ice Cream",       AnimationOptions = { Prop = "bzzz_icecream_chocolate",          PropBone = 18905, PropPlacement = {0.14, 0.03, 0.01, 85.0, 70.0, -203.0}, EmoteMoving = true, EmoteLoop = true, }},
-            ["smoothie1"] = {"mp_player_intdrink",                          "loop_bottle",                  "Vanilla Smoothie",             AnimationOptions = { Prop = "beanmachine_cup3",                 PropBone = 18905, PropPlacement = {0.0, -0.11, 0.07, -118.0, -121.0, 37.0}, EmoteMoving = true, EmoteLoop = true, }},
-            ["smoothie2"] = {"mp_player_intdrink",                          "loop_bottle",                  "Chocolate Smoothie",           AnimationOptions = { Prop = "beanmachine_cup3",                 PropBone = 18905, PropPlacement = {0.0, -0.11, 0.07, -118.0, -121.0, 37.0}, EmoteMoving = true, EmoteLoop = true, }},
-            ["smoothie3"] = {"mp_player_intdrink",                          "loop_bottle",                  "Strawberry Smoothie",          AnimationOptions = { Prop = "beanmachine_cup3",                 PropBone = 18905, PropPlacement = {0.0, -0.11, 0.07, -118.0, -121.0, 37.0}, EmoteMoving = true, EmoteLoop = true, }},
-            ["smoothie4"] = {"mp_player_intdrink",                          "loop_bottle",                  "Mint Smoothie",                AnimationOptions = { Prop = "beanmachine_cup3",                 PropBone = 18905, PropPlacement = {0.0, -0.11, 0.07, -118.0, -121.0, 37.0}, EmoteMoving = true, EmoteLoop = true, }},
-            ["smoothie5"] = {"mp_player_intdrink",                          "loop_bottle",                  "Pistachio Smoothie",           AnimationOptions = { Prop = "beanmachine_cup3",                 PropBone = 18905, PropPlacement = {0.0, -0.11, 0.07, -118.0, -121.0, 37.0}, EmoteMoving = true, EmoteLoop = true, }},
-            ["smoothie6"] = {"mp_player_intdrink",                          "loop_bottle",                  "Butterscotch Smoothie",        AnimationOptions = { Prop = "beanmachine_cup3",                 PropBone = 18905, PropPlacement = {0.0, -0.11, 0.07, -118.0, -121.0, 37.0}, EmoteMoving = true, EmoteLoop = true, }},
-            ["smoothie7"] = {"mp_player_intdrink",                          "loop_bottle",                  "Salted Caramel Smoothie",      AnimationOptions = { Prop = "beanmachine_cup3",                 PropBone = 18905, PropPlacement = {0.0, -0.11, 0.07, -118.0, -121.0, 37.0}, EmoteMoving = true, EmoteLoop = true, }},
-            ["smoothie8"] = {"mp_player_intdrink",                          "loop_bottle",                  "Bubblegum Smoothie",           AnimationOptions = { Prop = "beanmachine_cup3",                 PropBone = 18905, PropPlacement = {0.0, -0.11, 0.07, -118.0, -121.0, 37.0}, EmoteMoving = true, EmoteLoop = true, }},
-            ["smoothie9"] = {"mp_player_intdrink",                          "loop_bottle",                  "Toffee Smoothie",              AnimationOptions = { Prop = "beanmachine_cup3",                 PropBone = 18905, PropPlacement = {0.0, -0.11, 0.07, -118.0, -121.0, 37.0}, EmoteMoving = true, EmoteLoop = true, }},
-            ["smoothie10"] = {"mp_player_intdrink",                         "loop_bottle",                  "Cookie Dough Smoothie",        AnimationOptions = { Prop = "beanmachine_cup3",                 PropBone = 18905, PropPlacement = {0.0, -0.11, 0.07, -118.0, -121.0, 37.0}, EmoteMoving = true, EmoteLoop = true, }},
-            ["cupcake1"] = {"mp_player_inteat@burger",                      "mp_player_int_eat_burger",     "Vanilla Cupcake",              AnimationOptions = { Prop = "pata_christmasfood6",              PropBone = 60309, PropPlacement = {0.0100, 0.0200, -0.0100, -170.1788, 87.6716, 30.0540}, EmoteMoving = true, EmoteLoop = true, }},
-            ["cupcake2"] = {"mp_player_inteat@burger",                      "mp_player_int_eat_burger",     "Chocolate Cupcake",            AnimationOptions = { Prop = "pata_christmasfood6",              PropBone = 60309, PropPlacement = {0.0100, 0.0200, -0.0100, -170.1788, 87.6716, 30.0540}, EmoteMoving = true, EmoteLoop = true, }},
-            ["chocbar"] = {"mp_player_inteat@burger",                       "mp_player_int_eat_burger",     "Chocolate Bar",                AnimationOptions = { Prop = "prop_choc_ego",                    PropBone = 60309, PropPlacement = {0.0, 0.0, 0.0, 0.0, 0.0, 0.0}, EmoteMoving = true, EmoteLoop = true, }},
-            ["doughnut1"] = {"mp_player_inteat@burger",                     "mp_player_int_eat_burger",     "Jam Dougnut",                  AnimationOptions = { Prop = "prop_amb_donut",                   PropBone = 18905, PropPlacement = {0.13, 0.05, 0.02, -50.0, 16.0, 60.0}, EmoteMoving = true, EmoteLoop = true, }},
-            ["doughnut2"] = {"mp_player_inteat@burger",                     "mp_player_int_eat_burger",     "Sugar Dougnut",                AnimationOptions = { Prop = "prop_amb_donut",                   PropBone = 18905, PropPlacement = {0.13, 0.05, 0.02, -50.0, 16.0, 60.0}, EmoteMoving = true, EmoteLoop = true, }},
-            ["doughnut3"] = {"mp_player_inteat@burger",                     "mp_player_int_eat_burger",     "Custard Dougnut",              AnimationOptions = { Prop = "prop_amb_donut",                   PropBone = 18905, PropPlacement = {0.13, 0.05, 0.02, -50.0, 16.0, 60.0}, EmoteMoving = true, EmoteLoop = true, }},
-            ["doughnut4"] = {"mp_player_inteat@burger",                     "mp_player_int_eat_burger",     "Chocolate Dougnut",            AnimationOptions = { Prop = "bzzz_foodpack_donut002",           PropBone = 60309, PropPlacement = {0.0000, -0.0300, -0.0100, 10.0000, 0.0000, -1.0000}, EmoteMoving = true, EmoteLoop = true, }},
-            ["drink1"] = {"amb@world_human_drinking@coffee@male@idle_a",    "idle_c",                       "Tea",                          AnimationOptions = { Prop = "p_amb_coffeecup_01",               PropBone = 28422, PropPlacement = {0.0, 0.0, 0.0, 0.0, 0.0, 0.0}, EmoteMoving = true, EmoteLoop = true, }},
-            ["drink2"] = {"amb@world_human_drinking@coffee@male@idle_a",    "idle_c",                       "Coffee",                       AnimationOptions = { Prop = "p_amb_coffeecup_01",               PropBone = 28422, PropPlacement = {0.0, 0.0, 0.0, 0.0, 0.0, 0.0}, EmoteMoving = true, EmoteLoop = true, }},
-            ["drink3"] = {"amb@world_human_drinking@coffee@male@idle_a",    "idle_c",                       "Hot Chocolate",                AnimationOptions = { Prop = "p_amb_coffeecup_01",               PropBone = 28422, PropPlacement = {0.0, 0.0, 0.0, 0.0, 0.0, 0.0}, EmoteMoving = true, EmoteLoop = true, }},
-            ["drink4"] = {"smo@milkshake_idle",                             "milkshake_idle_clip",          "Cola",                         AnimationOptions = { Prop = "prop_rpemotes_soda04",             PropBone = 28422, PropPlacement = {0.0470, 0.0040, -0.0600, -88.0263, -25.0367, -27.3898}, EmoteMoving = true, EmoteLoop = true, }},
-            ["drink5"] = {"smo@milkshake_idle",                             "milkshake_idle_clip",          "Lemonade",                     AnimationOptions = { Prop = "prop_rpemotes_soda04",             PropBone = 28422, PropPlacement = {0.0470, 0.0040, -0.0600, -88.0263, -25.0367, -27.3898}, EmoteMoving = true, EmoteLoop = true, }},
-            ["drink6"] = {"smo@milkshake_idle",                             "milkshake_idle_clip",          "Orange Soda",                  AnimationOptions = { Prop = "prop_rpemotes_soda04",             PropBone = 28422, PropPlacement = {0.0470, 0.0040, -0.0600, -88.0263, -25.0367, -27.3898}, EmoteMoving = true, EmoteLoop = true, }},
-        }
-
-        for k, v in pairs(foodTable) do TriggerEvent("jim-consumables:server:syncAddItem", k, v) end
-        for k, v in pairs(emoteTable) do TriggerEvent("jim-consumables:server:syncAddEmote", k, v) end
-
-else
-    print("Lusty94_IceCream - Config.UseJimConsumables is set to FALSE - Make sure you add them to your own consumables script.")
+    local foodTable = {
+        ["vanillaicecream"]             = { emote = "icecream1", canRun = false, time = math.random(5000, 6000), stress = math.random(2, 4), heal = 0, armor = 0, type = "food", stats = { hunger = math.random(30,50), }},
+        ["chocolateicecream"]           = { emote = "icecream2", canRun = false, time = math.random(5000, 6000), stress = math.random(2, 4), heal = 0, armor = 0, type = "food", stats = { hunger = math.random(30,50), }},
+        ["strawberryicecream"]          = { emote = "icecream3", canRun = false, time = math.random(5000, 6000), stress = math.random(2, 4), heal = 0, armor = 0, type = "food", stats = { hunger = math.random(30,50), }},
+        ["minticecream"]                = { emote = "icecream4", canRun = false, time = math.random(5000, 6000), stress = math.random(2, 4), heal = 0, armor = 0, type = "food", stats = { hunger = math.random(30,50), }},
+        ["pistachioicecream"]           = { emote = "icecream5", canRun = false, time = math.random(5000, 6000), stress = math.random(2, 4), heal = 0, armor = 0, type = "food", stats = { hunger = math.random(30,50), }},
+        ["butterscotchicecream"]        = { emote = "icecream6", canRun = false, time = math.random(5000, 6000), stress = math.random(2, 4), heal = 0, armor = 0, type = "food", stats = { hunger = math.random(30,50), }},
+        ["saltedcaramelicecream"]       = { emote = "icecream7", canRun = false, time = math.random(5000, 6000), stress = math.random(2, 4), heal = 0, armor = 0, type = "food", stats = { hunger = math.random(30,50), }},
+        ["bubblegumicecream"]           = { emote = "icecream8", canRun = false, time = math.random(5000, 6000), stress = math.random(2, 4), heal = 0, armor = 0, type = "food", stats = { hunger = math.random(30,50), }},
+        ["toffeeicecream"]              = { emote = "icecream9", canRun = false, time = math.random(5000, 6000), stress = math.random(2, 4), heal = 0, armor = 0, type = "food", stats = { hunger = math.random(30,50), }},
+        ["cookiedoughicecream"]         = { emote = "icecream10", canRun = false, time = math.random(5000, 6000), stress = math.random(2, 4), heal = 0, armor = 0, type = "food", stats = { hunger = math.random(30,50), }},
+        ["vanillasmoothie"]             = { emote = "smoothie1", canRun = false, time = math.random(5000, 6000), stress = math.random(2, 4), heal = 0, armor = 0, type = "drink", stats = { thirst = math.random(30,50), }},
+        ["chocolatesmoothie"]           = { emote = "smoothie2", canRun = false, time = math.random(5000, 6000), stress = math.random(2, 4), heal = 0, armor = 0, type = "drink", stats = { thirst = math.random(30,50), }},
+        ["strawberrysmoothie"]          = { emote = "smoothie3", canRun = false, time = math.random(5000, 6000), stress = math.random(2, 4), heal = 0, armor = 0, type = "drink", stats = { thirst = math.random(30,50), }},
+        ["mintsmoothie"]                = { emote = "smoothie4", canRun = false, time = math.random(5000, 6000), stress = math.random(2, 4), heal = 0, armor = 0, type = "drink", stats = { thirst = math.random(30,50), }},
+        ["pistachiosmoothie"]           = { emote = "smoothie5", canRun = false, time = math.random(5000, 6000), stress = math.random(2, 4), heal = 0, armor = 0, type = "drink", stats = { thirst = math.random(30,50), }},
+        ["butterscotchsmoothie"]        = { emote = "smoothie6", canRun = false, time = math.random(5000, 6000), stress = math.random(2, 4), heal = 0, armor = 0, type = "drink", stats = { thirst = math.random(30,50), }},
+        ["saltedcaramelsmoothie"]       = { emote = "smoothie7", canRun = false, time = math.random(5000, 6000), stress = math.random(2, 4), heal = 0, armor = 0, type = "drink", stats = { thirst = math.random(30,50), }},
+        ["bubblegumsmoothie"]           = { emote = "smoothie8", canRun = false, time = math.random(5000, 6000), stress = math.random(2, 4), heal = 0, armor = 0, type = "drink", stats = { thirst = math.random(30,50), }},
+        ["toffeesmoothie"]              = { emote = "smoothie9", canRun = false, time = math.random(5000, 6000), stress = math.random(2, 4), heal = 0, armor = 0, type = "drink", stats = { thirst = math.random(30,50), }},
+        ["cookiedoughsmoothie"]         = { emote = "smoothie10", canRun = false, time = math.random(5000, 6000), stress = math.random(2, 4), heal = 0, armor = 0, type = "drink", stats = { thirst = math.random(30,50), }},
+        ["vanillacupcake"]              = { emote = "cupcake1", canRun = false, time = math.random(5000, 6000), stress = math.random(2, 4), heal = 0, armor = 0, type = "food", stats = { hunger = math.random(30,50), }},
+        ["chocolatecupcake"]            = { emote = "cupcake2", canRun = false, time = math.random(5000, 6000), stress = math.random(2, 4), heal = 0, armor = 0, type = "food", stats = { hunger = math.random(30,50), }},
+        ["chocolatebar"]                = { emote = "chocbar", canRun = false, time = math.random(5000, 6000), stress = math.random(2, 4), heal = 0, armor = 0, type = "food", stats = { hunger = math.random(30,50), }},
+        ["jamdoughnut"]                 = { emote = "doughnut1", canRun = false, time = math.random(5000, 6000), stress = math.random(2, 4), heal = 0, armor = 0, type = "food", stats = { hunger = math.random(30,50), }},
+        ["sugardoughnut"]               = { emote = "doughnut2", canRun = false, time = math.random(5000, 6000), stress = math.random(2, 4), heal = 0, armor = 0, type = "food", stats = { hunger = math.random(30,50), }},
+        ["custarddoughnut"]             = { emote = "doughnut3", canRun = false, time = math.random(5000, 6000), stress = math.random(2, 4), heal = 0, armor = 0, type = "food", stats = { hunger = math.random(30,50), }},
+        ["chocolatedoughnut"]           = { emote = "doughnut4", canRun = false, time = math.random(5000, 6000), stress = math.random(2, 4), heal = 0, armor = 0, type = "food", stats = { hunger = math.random(30,50), }},
+        ["tea"]                         = { emote = "drink1", canRun = false, time = math.random(5000, 6000), stress = math.random(2, 4), heal = 0, armor = 0, type = "drink", stats = { thirst = math.random(30,50), }},
+        ["cofee"]                       = { emote = "drink2", canRun = false, time = math.random(5000, 6000), stress = math.random(2, 4), heal = 0, armor = 0, type = "drink", stats = { thirst = math.random(30,50), }},
+        ["hotchocolate"]                = { emote = "drink3", canRun = false, time = math.random(5000, 6000), stress = math.random(2, 4), heal = 0, armor = 0, type = "drink", stats = { thirst = math.random(30,50), }},
+        ["cola"]                        = { emote = "drink4", canRun = false, time = math.random(5000, 6000), stress = math.random(2, 4), heal = 0, armor = 0, type = "drink", stats = { thirst = math.random(30,50), }},
+        ["lemonade"]                    = { emote = "drink5", canRun = false, time = math.random(5000, 6000), stress = math.random(2, 4), heal = 0, armor = 0, type = "drink", stats = { thirst = math.random(30,50), }},
+        ["orangesoda"]                  = { emote = "drink6", canRun = false, time = math.random(5000, 6000), stress = math.random(2, 4), heal = 0, armor = 0, type = "drink", stats = { thirst = math.random(30,50), }},
+    }
+    local emoteTable = {
+        ["icecream1"] = {"mp_player_inteat@burger",                     "mp_player_int_eat_burger",     "Vanilla Ice Cream",            AnimationOptions = { Prop = "bzzz_icecream_cherry",             PropBone = 18905, PropPlacement = {0.14, 0.03, 0.01, 85.0, 70.0, -203.0}, EmoteMoving = true, EmoteLoop = true, }},
+        ["icecream2"] = {"mp_player_inteat@burger",                     "mp_player_int_eat_burger",     "Chocolate Ice Cream",          AnimationOptions = { Prop = "bzzz_icecream_chocolate",          PropBone = 18905, PropPlacement = {0.14, 0.03, 0.01, 85.0, 70.0, -203.0}, EmoteMoving = true, EmoteLoop = true, }},
+        ["icecream3"] = {"mp_player_inteat@burger",                     "mp_player_int_eat_burger",     "Strawberry Ice Cream",         AnimationOptions = { Prop = "bzzz_icecream_cherry",             PropBone = 18905, PropPlacement = {0.14, 0.03, 0.01, 85.0, 70.0, -203.0}, EmoteMoving = true, EmoteLoop = true, }},
+        ["icecream4"] = {"mp_player_inteat@burger",                     "mp_player_int_eat_burger",     "Mint Ice Cream",               AnimationOptions = { Prop = "bzzz_icecream_cherry",             PropBone = 18905, PropPlacement = {0.14, 0.03, 0.01, 85.0, 70.0, -203.0}, EmoteMoving = true, EmoteLoop = true, }},
+        ["icecream5"] = {"mp_player_inteat@burger",                     "mp_player_int_eat_burger",     "Pistachio Ice Cream",          AnimationOptions = { Prop = "bzzz_icecream_chocolate",          PropBone = 18905, PropPlacement = {0.14, 0.03, 0.01, 85.0, 70.0, -203.0}, EmoteMoving = true, EmoteLoop = true, }},
+        ["icecream6"] = {"mp_player_inteat@burger",                     "mp_player_int_eat_burger",     "Butterscotch Ice Cream",       AnimationOptions = { Prop = "bzzz_icecream_lemon",              PropBone = 18905, PropPlacement = {0.14, 0.03, 0.01, 85.0, 70.0, -203.0}, EmoteMoving = true, EmoteLoop = true, }},
+        ["icecream7"] = {"mp_player_inteat@burger",                     "mp_player_int_eat_burger",     "Salted Caramel Ice Cream",     AnimationOptions = { Prop = "bzzz_icecream_cherry",             PropBone = 18905, PropPlacement = {0.14, 0.03, 0.01, 85.0, 70.0, -203.0}, EmoteMoving = true, EmoteLoop = true, }},
+        ["icecream8"] = {"mp_player_inteat@burger",                     "mp_player_int_eat_burger",     "Bubblegum Ice Cream",          AnimationOptions = { Prop = "bzzz_icecream_lemon",              PropBone = 18905, PropPlacement = {0.14, 0.03, 0.01, 85.0, 70.0, -203.0}, EmoteMoving = true, EmoteLoop = true, }},
+        ["icecream9"] = {"mp_player_inteat@burger",                     "mp_player_int_eat_burger",     "Toffee Ice Cream",             AnimationOptions = { Prop = "bzzz_icecream_cherry",             PropBone = 18905, PropPlacement = {0.14, 0.03, 0.01, 85.0, 70.0, -203.0}, EmoteMoving = true, EmoteLoop = true, }},
+        ["icecream10"] = {"mp_player_inteat@burger",                    "mp_player_int_eat_burger",     "Cookie Dough Ice Cream",       AnimationOptions = { Prop = "bzzz_icecream_chocolate",          PropBone = 18905, PropPlacement = {0.14, 0.03, 0.01, 85.0, 70.0, -203.0}, EmoteMoving = true, EmoteLoop = true, }},
+        ["smoothie1"] = {"mp_player_intdrink",                          "loop_bottle",                  "Vanilla Smoothie",             AnimationOptions = { Prop = "beanmachine_cup3",                 PropBone = 18905, PropPlacement = {0.0, -0.11, 0.07, -118.0, -121.0, 37.0}, EmoteMoving = true, EmoteLoop = true, }},
+        ["smoothie2"] = {"mp_player_intdrink",                          "loop_bottle",                  "Chocolate Smoothie",           AnimationOptions = { Prop = "beanmachine_cup3",                 PropBone = 18905, PropPlacement = {0.0, -0.11, 0.07, -118.0, -121.0, 37.0}, EmoteMoving = true, EmoteLoop = true, }},
+        ["smoothie3"] = {"mp_player_intdrink",                          "loop_bottle",                  "Strawberry Smoothie",          AnimationOptions = { Prop = "beanmachine_cup3",                 PropBone = 18905, PropPlacement = {0.0, -0.11, 0.07, -118.0, -121.0, 37.0}, EmoteMoving = true, EmoteLoop = true, }},
+        ["smoothie4"] = {"mp_player_intdrink",                          "loop_bottle",                  "Mint Smoothie",                AnimationOptions = { Prop = "beanmachine_cup3",                 PropBone = 18905, PropPlacement = {0.0, -0.11, 0.07, -118.0, -121.0, 37.0}, EmoteMoving = true, EmoteLoop = true, }},
+        ["smoothie5"] = {"mp_player_intdrink",                          "loop_bottle",                  "Pistachio Smoothie",           AnimationOptions = { Prop = "beanmachine_cup3",                 PropBone = 18905, PropPlacement = {0.0, -0.11, 0.07, -118.0, -121.0, 37.0}, EmoteMoving = true, EmoteLoop = true, }},
+        ["smoothie6"] = {"mp_player_intdrink",                          "loop_bottle",                  "Butterscotch Smoothie",        AnimationOptions = { Prop = "beanmachine_cup3",                 PropBone = 18905, PropPlacement = {0.0, -0.11, 0.07, -118.0, -121.0, 37.0}, EmoteMoving = true, EmoteLoop = true, }},
+        ["smoothie7"] = {"mp_player_intdrink",                          "loop_bottle",                  "Salted Caramel Smoothie",      AnimationOptions = { Prop = "beanmachine_cup3",                 PropBone = 18905, PropPlacement = {0.0, -0.11, 0.07, -118.0, -121.0, 37.0}, EmoteMoving = true, EmoteLoop = true, }},
+        ["smoothie8"] = {"mp_player_intdrink",                          "loop_bottle",                  "Bubblegum Smoothie",           AnimationOptions = { Prop = "beanmachine_cup3",                 PropBone = 18905, PropPlacement = {0.0, -0.11, 0.07, -118.0, -121.0, 37.0}, EmoteMoving = true, EmoteLoop = true, }},
+        ["smoothie9"] = {"mp_player_intdrink",                          "loop_bottle",                  "Toffee Smoothie",              AnimationOptions = { Prop = "beanmachine_cup3",                 PropBone = 18905, PropPlacement = {0.0, -0.11, 0.07, -118.0, -121.0, 37.0}, EmoteMoving = true, EmoteLoop = true, }},
+        ["smoothie10"] = {"mp_player_intdrink",                         "loop_bottle",                  "Cookie Dough Smoothie",        AnimationOptions = { Prop = "beanmachine_cup3",                 PropBone = 18905, PropPlacement = {0.0, -0.11, 0.07, -118.0, -121.0, 37.0}, EmoteMoving = true, EmoteLoop = true, }},
+        ["cupcake1"] = {"mp_player_inteat@burger",                      "mp_player_int_eat_burger",     "Vanilla Cupcake",              AnimationOptions = { Prop = "pata_christmasfood6",              PropBone = 60309, PropPlacement = {0.0100, 0.0200, -0.0100, -170.1788, 87.6716, 30.0540}, EmoteMoving = true, EmoteLoop = true, }},
+        ["cupcake2"] = {"mp_player_inteat@burger",                      "mp_player_int_eat_burger",     "Chocolate Cupcake",            AnimationOptions = { Prop = "pata_christmasfood6",              PropBone = 60309, PropPlacement = {0.0100, 0.0200, -0.0100, -170.1788, 87.6716, 30.0540}, EmoteMoving = true, EmoteLoop = true, }},
+        ["chocbar"] = {"mp_player_inteat@burger",                       "mp_player_int_eat_burger",     "Chocolate Bar",                AnimationOptions = { Prop = "prop_choc_ego",                    PropBone = 60309, PropPlacement = {0.0, 0.0, 0.0, 0.0, 0.0, 0.0}, EmoteMoving = true, EmoteLoop = true, }},
+        ["doughnut1"] = {"mp_player_inteat@burger",                     "mp_player_int_eat_burger",     "Jam Dougnut",                  AnimationOptions = { Prop = "prop_amb_donut",                   PropBone = 18905, PropPlacement = {0.13, 0.05, 0.02, -50.0, 16.0, 60.0}, EmoteMoving = true, EmoteLoop = true, }},
+        ["doughnut2"] = {"mp_player_inteat@burger",                     "mp_player_int_eat_burger",     "Sugar Dougnut",                AnimationOptions = { Prop = "prop_amb_donut",                   PropBone = 18905, PropPlacement = {0.13, 0.05, 0.02, -50.0, 16.0, 60.0}, EmoteMoving = true, EmoteLoop = true, }},
+        ["doughnut3"] = {"mp_player_inteat@burger",                     "mp_player_int_eat_burger",     "Custard Dougnut",              AnimationOptions = { Prop = "prop_amb_donut",                   PropBone = 18905, PropPlacement = {0.13, 0.05, 0.02, -50.0, 16.0, 60.0}, EmoteMoving = true, EmoteLoop = true, }},
+        ["doughnut4"] = {"mp_player_inteat@burger",                     "mp_player_int_eat_burger",     "Chocolate Dougnut",            AnimationOptions = { Prop = "bzzz_foodpack_donut002",           PropBone = 60309, PropPlacement = {0.0000, -0.0300, -0.0100, 10.0000, 0.0000, -1.0000}, EmoteMoving = true, EmoteLoop = true, }},
+        ["drink1"] = {"amb@world_human_drinking@coffee@male@idle_a",    "idle_c",                       "Tea",                          AnimationOptions = { Prop = "p_amb_coffeecup_01",               PropBone = 28422, PropPlacement = {0.0, 0.0, 0.0, 0.0, 0.0, 0.0}, EmoteMoving = true, EmoteLoop = true, }},
+        ["drink2"] = {"amb@world_human_drinking@coffee@male@idle_a",    "idle_c",                       "Coffee",                       AnimationOptions = { Prop = "p_amb_coffeecup_01",               PropBone = 28422, PropPlacement = {0.0, 0.0, 0.0, 0.0, 0.0, 0.0}, EmoteMoving = true, EmoteLoop = true, }},
+        ["drink3"] = {"amb@world_human_drinking@coffee@male@idle_a",    "idle_c",                       "Hot Chocolate",                AnimationOptions = { Prop = "p_amb_coffeecup_01",               PropBone = 28422, PropPlacement = {0.0, 0.0, 0.0, 0.0, 0.0, 0.0}, EmoteMoving = true, EmoteLoop = true, }},
+        ["drink4"] = {"smo@milkshake_idle",                             "milkshake_idle_clip",          "Cola",                         AnimationOptions = { Prop = "prop_rpemotes_soda04",             PropBone = 28422, PropPlacement = {0.0470, 0.0040, -0.0600, -88.0263, -25.0367, -27.3898}, EmoteMoving = true, EmoteLoop = true, }},
+        ["drink5"] = {"smo@milkshake_idle",                             "milkshake_idle_clip",          "Lemonade",                     AnimationOptions = { Prop = "prop_rpemotes_soda04",             PropBone = 28422, PropPlacement = {0.0470, 0.0040, -0.0600, -88.0263, -25.0367, -27.3898}, EmoteMoving = true, EmoteLoop = true, }},
+        ["drink6"] = {"smo@milkshake_idle",                             "milkshake_idle_clip",          "Orange Soda",                  AnimationOptions = { Prop = "prop_rpemotes_soda04",             PropBone = 28422, PropPlacement = {0.0470, 0.0040, -0.0600, -88.0263, -25.0367, -27.3898}, EmoteMoving = true, EmoteLoop = true, }},
+    }
+    for k, v in pairs(foodTable) do TriggerEvent("jim-consumables:server:syncAddItem", k, v) end
+    for k, v in pairs(emoteTable) do TriggerEvent("jim-consumables:server:syncAddEmote", k, v) end
 end
 
+--ingredients shop
+function IceCreamIngredients()
+    exports.ox_inventory:RegisterShop('IceCreamIngredients', {
+        name = 'Ice Cream Ingredients',
+        inventory = {
+            { name = 'softscoopmix', price = 0 },
+            { name = 'smoothiemix', price = 0 },
+            { name = 'vanilla', price = 0 },
+            { name = 'chocolate', price = 0 },
+            { name = 'strawberry', price = 0 },
+            { name = 'mint', price = 0 },
+            { name = 'pistachio', price = 0 },
+            { name = 'butterscotch', price = 0 },
+            { name = 'saltedcaramel', price = 0 },
+            { name = 'bubblegum', price = 0 },
+            { name = 'toffee', price = 0 },
+            { name = 'cookiedough', price = 0 },
+        },
+        groups = {
+            icecream = 0
+        },
+    })    
+end
+
+--snacks shop
+function IceCreamSnacks()
+    exports.ox_inventory:RegisterShop('IceCreamSnacks', {
+        name = 'Ice Cream Snack Shelf',
+        inventory = {
+            { name = 'vanillacupcake', price = 0 },
+            { name = 'chocolatecupcake', price = 0 },
+            { name = 'chocolatebar', price = 0 },
+            { name = 'jamdoughnut', price = 0 },
+            { name = 'sugardoughnut', price = 0 },
+            { name = 'custarddoughnut', price = 0 },
+            { name = 'chocolatedoughnut', price = 0 },
+        },
+        groups = {
+            icecream = 0
+        },
+    })
+end
+
+--collection tray
+function IceCreamCollectionTray()
+    local collectionTray = {
+        id = 'IceCreamCollectionTray',
+        label = 'Ice Cream Collection Tray',
+        slots = 6,
+        weight = 10000000,
+        owner = false,
+    }
+    exports.ox_inventory:RegisterStash(collectionTray.id, collectionTray.label, collectionTray.slots, collectionTray.weight, collectionTray.owner, collectionTray.jobs)
+end
+--weapon storage
+function IceCreamStorageFridge()
+    local storage = {
+        id = 'IceCreamStorageFridge',
+        label = 'Ice Cream Storage Fridge',
+        slots = 64,
+        weight = 10000000,
+        owner = true,
+        jobs = {["icecream"] = 0},
+    }
+    exports.ox_inventory:RegisterStash(storage.id, storage.label, storage.slots, storage.weight, storage.owner, storage.jobs)
+end
+
+
+-- dont touch this is for ox stashes and shops
+AddEventHandler('onResourceStart', function(resourceName)
+    if (GetCurrentResourceName() == resourceName) then
+        if InvType == 'ox' then
+            print('^5--<^3!^5>-- ^7| Lusty94_IceCream |^5 ^5--<^3!^5>--^7')
+            print('^5--<^3!^5>-- ^7| Inventory Type is set to ox |^5 ^5--<^3!^5>--^7')
+            print('^5--<^3!^5>-- ^7| Registering shops and stashes automatically |^5 ^5--<^3!^5>--^7')
+            IceCreamIngredients()
+            IceCreamSnacks()
+            IceCreamCollectionTray()
+            IceCreamStorageFridge()
+            print('^5--<^3!^5>-- ^7| Shops and stashes registered successfully |^5 ^5--<^3!^5>--^7')
+        end
+    end
+end)
 
 
 
