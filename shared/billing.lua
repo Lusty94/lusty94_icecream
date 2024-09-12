@@ -1,8 +1,6 @@
 local QBCore = exports['qb-core']:GetCoreObject()
 
 
---[[ EDIT THE EVENTS BELOW TO SUIT OTHER DUTY HANDLING RESOURCES NO SUPPORT IS GIVEN FOR SCRIPT CHANGES THAT ARE NOT SUPPORTED BY DEFUALT]]
-
 ------------------------PAYMENT SECTION-------------------------------
 
 

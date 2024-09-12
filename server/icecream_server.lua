@@ -28,13 +28,14 @@ RegisterNetEvent('lusty94_icecream:server:GiveSmoothieCup', function(amount)
     local src = source
     local Player = QBCore.Functions.GetPlayer(src)
     if InvType == 'qb' then        
-        Player.Functions.AddItem("smoothiecup", amount)
-        TriggerClientEvent("inventory:client:ItemBox", src, QBCore.Shared.Items["smoothiecup"], "add", amount)
+        if exports['qb-inventory']:AddItem(src, 'smoothiecup', amount, false, false, false) then
+            TriggerClientEvent('qb-inventory:client:ItemBox', src, QBCore.Shared.Items['smoothiecup'], 'add', amount)
+        end
     elseif InvType == 'ox' then
-        if exports.ox_inventory:CanCarryItem(src, "smoothiecup", 1) then
+        if exports.ox_inventory:CanCarryItem(src, "smoothiecup", amount) then
             exports.ox_inventory:AddItem(src,"smoothiecup", amount)
         else
-            SendNotify(src,"You Can\'t Carry Anymore of This Item!", 'error', 2000)
+            SendNotify(src,Config.Language.Notifications.CantCarry, 'error', 2000)
         end
     end
 end)
@@ -45,13 +46,14 @@ RegisterNetEvent('lusty94_icecream:server:GiveMug', function(amount)
     local src = source
     local Player = QBCore.Functions.GetPlayer(src)        
     if InvType == 'qb' then        
-        Player.Functions.AddItem("mug", amount)
-        TriggerClientEvent("inventory:client:ItemBox", src, QBCore.Shared.Items["mug"], "add", amount)
+        if exports['qb-inventory']:AddItem(src, 'mug', amount, false, false, false) then
+            TriggerClientEvent('qb-inventory:client:ItemBox', src, QBCore.Shared.Items['mug'], 'add', amount)
+        end
     elseif InvType == 'ox' then
-        if exports.ox_inventory:CanCarryItem(src, "mug", 1) then
+        if exports.ox_inventory:CanCarryItem(src, "mug", amount) then
             exports.ox_inventory:AddItem(src,"mug", amount)
         else
-            SendNotify(src,"You Can\'t Carry Anymore of This Item!", 'error', 2000)
+            SendNotify(src,Config.Language.Notifications.CantCarry, 'error', 2000)
         end
     end
 end)
@@ -62,13 +64,14 @@ RegisterNetEvent('lusty94_icecream:server:GiveSoftDrinksCup', function(amount)
     local src = source
     local Player = QBCore.Functions.GetPlayer(src)
     if InvType == 'qb' then        
-        Player.Functions.AddItem("softdrinkscup", amount)
-        TriggerClientEvent("inventory:client:ItemBox", src, QBCore.Shared.Items["softdrinkscup"], "add", amount)
+        if exports['qb-inventory']:AddItem(src, 'softdrinkscup', amount, false, false, false) then
+            TriggerClientEvent('qb-inventory:client:ItemBox', src, QBCore.Shared.Items['softdrinkscup'], 'add', amount)
+        end
     elseif InvType == 'ox' then
-        if exports.ox_inventory:CanCarryItem(src, "softdrinkscup", 1) then
+        if exports.ox_inventory:CanCarryItem(src, "softdrinkscup", amount) then
             exports.ox_inventory:AddItem(src,"softdrinkscup", amount)
         else
-            SendNotify(src,"You Can\'t Carry Anymore of This Item!", 'error', 2000)
+            SendNotify(src,Config.Language.Notifications.CantCarry, 'error', 2000)
         end
     end
 end)
@@ -79,13 +82,14 @@ RegisterNetEvent('lusty94_icecream:server:GiveIceCreamCone', function(amount)
     local src = source
     local Player = QBCore.Functions.GetPlayer(src)
     if InvType == 'qb' then        
-        Player.Functions.AddItem("icecreamcone", amount)
-        TriggerClientEvent("inventory:client:ItemBox", src, QBCore.Shared.Items["icecreamcone"], "add", amount)
+        if exports['qb-inventory']:AddItem(src, 'icecreamcone', amount, false, false, false) then
+            TriggerClientEvent('qb-inventory:client:ItemBox', src, QBCore.Shared.Items['icecreamcone'], 'add', amount)
+        end
     elseif InvType == 'ox' then
         if exports.ox_inventory:CanCarryItem(src, "icecreamcone", 1) then
             exports.ox_inventory:AddItem(src,"icecreamcone", amount)
         else
-            SendNotify(src,"You Can\'t Carry Anymore of This Item!", 'error', 2000)
+            SendNotify(src,Config.Language.Notifications.CantCarry, 'error', 2000)
         end
     end
 end)
@@ -117,22 +121,24 @@ RegisterNetEvent('lusty94_icecream:server:CreateVanillaSmoothie', function()
     local src = source
     local Player = QBCore.Functions.GetPlayer(src)
     if InvType == 'qb' then
-        Player.Functions.RemoveItem("smoothiecup", 1)
-            TriggerClientEvent("inventory:client:ItemBox", src, QBCore.Shared.Items["smoothiecup"], "remove")
-        Player.Functions.RemoveItem("vanilla", 1)
-            TriggerClientEvent("inventory:client:ItemBox", src, QBCore.Shared.Items["vanilla"], "remove")
-        Player.Functions.RemoveItem("smoothiemix", 1)
-            TriggerClientEvent("inventory:client:ItemBox", src, QBCore.Shared.Items["smoothiemix"], "remove")
-        Player.Functions.AddItem("vanillasmoothie", 1)
-            TriggerClientEvent("inventory:client:ItemBox", src, QBCore.Shared.Items["vanillasmoothie"], "add")
+        if exports['qb-inventory']:RemoveItem(src, 'smoothiecup', 1, false, false, false) then
+            TriggerClientEvent('qb-inventory:client:ItemBox', src, QBCore.Shared.Items['smoothiecup'], 'remove', 1)
+            exports['qb-inventory']:RemoveItem(src, 'vanilla', 1, false, false, false)
+            TriggerClientEvent('qb-inventory:client:ItemBox', src, QBCore.Shared.Items['vanilla'], 'remove', 1)
+            exports['qb-inventory']:RemoveItem(src, 'smoothiemix', 1, false, false, false)
+            TriggerClientEvent('qb-inventory:client:ItemBox', src, QBCore.Shared.Items['smoothiemix'], 'remove', 1)
+            exports['qb-inventory']:AddItem(src, 'vanillasmoothie', 1, false, false, false)
+            TriggerClientEvent('qb-inventory:client:ItemBox', src, QBCore.Shared.Items['vanillasmoothie'], 'add', 1)
+        end
     elseif InvType == 'ox' then
-        if exports.ox_inventory:CanCarryItem(src, "vanillasmoothie", 1) then
-            exports.ox_inventory:RemoveItem(src,"smoothiecup", 1)
+        if exports.ox_inventory:RemoveItem(src,"smoothiecup", 1) then
             exports.ox_inventory:RemoveItem(src,"vanilla", 1)
             exports.ox_inventory:RemoveItem(src,"smoothiemix", 1)
-            exports.ox_inventory:AddItem(src,"vanillasmoothie", 1)
-        else
-            SendNotify(src,"You Can\'t Carry Anymore of This Item!", 'error', 2000)
+            if exports.ox_inventory:CanCarryItem(src, "vanillasmoothie", 1) then
+                exports.ox_inventory:AddItem(src,"vanillasmoothie", 1)
+            else
+                SendNotify(src,Config.Language.Notifications.CantCarry, 'error', 2000)
+            end
         end
     end
 end)
@@ -161,22 +167,24 @@ RegisterNetEvent('lusty94_icecream:server:CreateChocolateSmoothie', function()
     local src = source
     local Player = QBCore.Functions.GetPlayer(src)
     if InvType == 'qb' then
-        Player.Functions.RemoveItem("smoothiecup", 1)
-            TriggerClientEvent("inventory:client:ItemBox", src, QBCore.Shared.Items["smoothiecup"], "remove")
-        Player.Functions.RemoveItem("chocolate", 1)
-            TriggerClientEvent("inventory:client:ItemBox", src, QBCore.Shared.Items["chocolate"], "remove")
-        Player.Functions.RemoveItem("smoothiemix", 1)
-            TriggerClientEvent("inventory:client:ItemBox", src, QBCore.Shared.Items["smoothiemix"], "remove")            
-        Player.Functions.AddItem("chocolatesmoothie", 1)
-            TriggerClientEvent("inventory:client:ItemBox", src, QBCore.Shared.Items["chocolatesmoothie"], "add")
+        if exports['qb-inventory']:RemoveItem(src, 'smoothiecup', 1, false, false, false) then
+            TriggerClientEvent('qb-inventory:client:ItemBox', src, QBCore.Shared.Items['smoothiecup'], 'remove', 1)
+            exports['qb-inventory']:RemoveItem(src, 'chocolate', 1, false, false, false)
+            TriggerClientEvent('qb-inventory:client:ItemBox', src, QBCore.Shared.Items['chocolate'], 'remove', 1)
+            exports['qb-inventory']:RemoveItem(src, 'smoothiemix', 1, false, false, false)
+            TriggerClientEvent('qb-inventory:client:ItemBox', src, QBCore.Shared.Items['smoothiemix'], 'remove', 1)
+            exports['qb-inventory']:AddItem(src, 'chocolatesmoothie', 1, false, false, false)
+            TriggerClientEvent('qb-inventory:client:ItemBox', src, QBCore.Shared.Items['chocolatesmoothie'], 'add', 1)
+        end
     elseif InvType == 'ox' then
-        if exports.ox_inventory:CanCarryItem(src, "chocolatesmoothie", 1) then
-            exports.ox_inventory:RemoveItem(src,"smoothiecup", 1)
+        if exports.ox_inventory:RemoveItem(src,"smoothiecup", 1) then
             exports.ox_inventory:RemoveItem(src,"chocolate", 1)
             exports.ox_inventory:RemoveItem(src,"smoothiemix", 1)        
-            exports.ox_inventory:AddItem(src,"chocolatesmoothie", 1)
-        else
-            SendNotify(src,"You Can\'t Carry Anymore of This Item!", 'error', 2000)
+            if exports.ox_inventory:CanCarryItem(src, "chocolatesmoothie", 1) then
+                exports.ox_inventory:AddItem(src,"chocolatesmoothie", 1)
+            else
+                SendNotify(src,Config.Language.Notifications.CantCarry, 'error', 2000)
+            end
         end
     end
 end)
@@ -205,22 +213,24 @@ RegisterNetEvent('lusty94_icecream:server:CreateStrawberrySmoothie', function()
     local src = source
     local Player = QBCore.Functions.GetPlayer(src)
     if InvType == 'qb' then
-        Player.Functions.RemoveItem("smoothiecup", 1)
-            TriggerClientEvent("inventory:client:ItemBox", src, QBCore.Shared.Items["smoothiecup"], "remove")
-        Player.Functions.RemoveItem("strawberry", 1)
-            TriggerClientEvent("inventory:client:ItemBox", src, QBCore.Shared.Items["strawberry"], "remove")
-        Player.Functions.RemoveItem("smoothiemix", 1)
-            TriggerClientEvent("inventory:client:ItemBox", src, QBCore.Shared.Items["smoothiemix"], "remove")            
-        Player.Functions.AddItem("strawberrysmoothie", 1)
-            TriggerClientEvent("inventory:client:ItemBox", src, QBCore.Shared.Items["strawberrysmoothie"], "add")
+        if exports['qb-inventory']:RemoveItem(src, 'smoothiecup', 1, false, false, false) then
+            TriggerClientEvent('qb-inventory:client:ItemBox', src, QBCore.Shared.Items['smoothiecup'], 'remove', 1)
+            exports['qb-inventory']:RemoveItem(src, 'strawberry', 1, false, false, false)
+            TriggerClientEvent('qb-inventory:client:ItemBox', src, QBCore.Shared.Items['strawberry'], 'remove', 1)
+            exports['qb-inventory']:RemoveItem(src, 'smoothiemix', 1, false, false, false)
+            TriggerClientEvent('qb-inventory:client:ItemBox', src, QBCore.Shared.Items['smoothiemix'], 'remove', 1)
+            exports['qb-inventory']:AddItem(src, 'strawberrysmoothie', 1, false, false, false)
+            TriggerClientEvent('qb-inventory:client:ItemBox', src, QBCore.Shared.Items['strawberrysmoothie'], 'add', 1)
+        end
     elseif InvType == 'ox' then
-        if exports.ox_inventory:CanCarryItem(src, "strawberrysmoothie", 1) then
-            exports.ox_inventory:RemoveItem(src,"smoothiecup", 1)
+        if exports.ox_inventory:RemoveItem(src,"smoothiecup", 1) then
             exports.ox_inventory:RemoveItem(src,"strawberry", 1)
             exports.ox_inventory:RemoveItem(src,"smoothiemix", 1)        
-            exports.ox_inventory:AddItem(src,"strawberrysmoothie", 1)
-        else
-            SendNotify(src,"You Can\'t Carry Anymore of This Item!", 'error', 2000)
+            if exports.ox_inventory:CanCarryItem(src, "strawberrysmoothie", 1) then
+                exports.ox_inventory:AddItem(src,"strawberrysmoothie", 1)
+            else
+                SendNotify(src,Config.Language.Notifications.CantCarry, 'error', 2000)
+            end
         end
     end
 end)
@@ -248,23 +258,24 @@ RegisterNetEvent('lusty94_icecream:server:CreateMintSmoothie', function()
     local src = source
     local Player = QBCore.Functions.GetPlayer(src)
     if InvType == 'qb' then
-        Player.Functions.RemoveItem("smoothiecup", 1)
-            TriggerClientEvent("inventory:client:ItemBox", src, QBCore.Shared.Items["smoothiecup"], "remove")
-        Player.Functions.RemoveItem("mint", 1)
-            TriggerClientEvent("inventory:client:ItemBox", src, QBCore.Shared.Items["mint"], "remove")
-        Player.Functions.RemoveItem("smoothiemix", 1)
-            TriggerClientEvent("inventory:client:ItemBox", src, QBCore.Shared.Items["smoothiemix"], "remove")            
-        Player.Functions.AddItem("mintsmoothie", 1)
-            TriggerClientEvent("inventory:client:ItemBox", src, QBCore.Shared.Items["mintsmoothie"], "add")
+        if exports['qb-inventory']:RemoveItem(src, 'smoothiecup', 1, false, false, false) then
+            TriggerClientEvent('qb-inventory:client:ItemBox', src, QBCore.Shared.Items['smoothiecup'], 'remove', 1)
+            exports['qb-inventory']:RemoveItem(src, 'mint', 1, false, false, false)
+            TriggerClientEvent('qb-inventory:client:ItemBox', src, QBCore.Shared.Items['mint'], 'remove', 1)
+            exports['qb-inventory']:RemoveItem(src, 'smoothiemix', 1, false, false, false)
+            TriggerClientEvent('qb-inventory:client:ItemBox', src, QBCore.Shared.Items['smoothiemix'], 'remove', 1)
+            exports['qb-inventory']:AddItem(src, 'mintsmoothie', 1, false, false, false)
+            TriggerClientEvent('qb-inventory:client:ItemBox', src, QBCore.Shared.Items['mintsmoothie'], 'add', 1)
+        end
     elseif InvType == 'ox' then
-        if exports.ox_inventory:CanCarryItem(src, "mintsmoothie", 1) then
-            exports.ox_inventory:RemoveItem(src,"smoothiecup", 1)
-            exports.ox_inventory:RemoveItem(src,"mint", 1)
-            exports.ox_inventory:RemoveItem(src,"smoothiemix", 1)
-            
-            exports.ox_inventory:AddItem(src,"mintsmoothie", 1)
-        else
-            SendNotify(src,"You Can\'t Carry Anymore of This Item!", 'error', 2000)
+        if exports.ox_inventory:RemoveItem(src,"smoothiecup", 1) then
+            if exports.ox_inventory:CanCarryItem(src, "mintsmoothie", 1) then
+                exports.ox_inventory:RemoveItem(src,"mint", 1)
+                exports.ox_inventory:RemoveItem(src,"smoothiemix", 1)                
+                exports.ox_inventory:AddItem(src,"mintsmoothie", 1)
+            else
+                SendNotify(src,Config.Language.Notifications.CantCarry, 'error', 2000)
+            end
         end
     end
 end)
@@ -292,23 +303,24 @@ RegisterNetEvent('lusty94_icecream:server:CreatePistachioSmoothie', function()
     local src = source
     local Player = QBCore.Functions.GetPlayer(src)
     if InvType == 'qb' then
-        Player.Functions.RemoveItem("smoothiecup", 1)
-            TriggerClientEvent("inventory:client:ItemBox", src, QBCore.Shared.Items["smoothiecup"], "remove")
-        Player.Functions.RemoveItem("pistachio", 1)
-            TriggerClientEvent("inventory:client:ItemBox", src, QBCore.Shared.Items["pistachio"], "remove")
-        Player.Functions.RemoveItem("smoothiemix", 1)
-            TriggerClientEvent("inventory:client:ItemBox", src, QBCore.Shared.Items["smoothiemix"], "remove")            
-        Player.Functions.AddItem("pistachiosmoothie", 1)
-            TriggerClientEvent("inventory:client:ItemBox", src, QBCore.Shared.Items["pistachiosmoothie"], "add")
+        if exports['qb-inventory']:RemoveItem(src, 'smoothiecup', 1, false, false, false) then
+            TriggerClientEvent('qb-inventory:client:ItemBox', src, QBCore.Shared.Items['smoothiecup'], 'remove', 1)
+            exports['qb-inventory']:RemoveItem(src, 'pistachio', 1, false, false, false)
+            TriggerClientEvent('qb-inventory:client:ItemBox', src, QBCore.Shared.Items['pistachio'], 'remove', 1)
+            exports['qb-inventory']:RemoveItem(src, 'smoothiemix', 1, false, false, false)
+            TriggerClientEvent('qb-inventory:client:ItemBox', src, QBCore.Shared.Items['smoothiemix'], 'remove', 1)
+            exports['qb-inventory']:AddItem(src, 'pistachiosmoothie', 1, false, false, false)
+            TriggerClientEvent('qb-inventory:client:ItemBox', src, QBCore.Shared.Items['pistachiosmoothie'], 'add', 1)
+        end
     elseif InvType == 'ox' then
-        if exports.ox_inventory:CanCarryItem(src, "pistachiosmoothie", 1) then
-            exports.ox_inventory:RemoveItem(src,"smoothiecup", 1)
+        if exports.ox_inventory:RemoveItem(src,"smoothiecup", 1) then
             exports.ox_inventory:RemoveItem(src,"pistachio", 1)
             exports.ox_inventory:RemoveItem(src,"smoothiemix", 1)
-            
-            exports.ox_inventory:AddItem(src,"pistachiosmoothie", 1)
-        else
-            SendNotify(src,"You Can\'t Carry Anymore of This Item!", 'error', 2000)
+            if exports.ox_inventory:CanCarryItem(src, "pistachiosmoothie", 1) then                
+                exports.ox_inventory:AddItem(src,"pistachiosmoothie", 1)
+            else
+                SendNotify(src,Config.Language.Notifications.CantCarry, 'error', 2000)
+            end
         end
     end
 end)
@@ -336,23 +348,24 @@ RegisterNetEvent('lusty94_icecream:server:CreateButterScotchSmoothie', function(
     local src = source
     local Player = QBCore.Functions.GetPlayer(src)
     if InvType == 'qb' then
-        Player.Functions.RemoveItem("smoothiecup", 1)
-            TriggerClientEvent("inventory:client:ItemBox", src, QBCore.Shared.Items["smoothiecup"], "remove")
-        Player.Functions.RemoveItem("butterscotch", 1)
-            TriggerClientEvent("inventory:client:ItemBox", src, QBCore.Shared.Items["butterscotch"], "remove")
-        Player.Functions.RemoveItem("smoothiemix", 1)
-            TriggerClientEvent("inventory:client:ItemBox", src, QBCore.Shared.Items["smoothiemix"], "remove")            
-        Player.Functions.AddItem("butterscotchsmoothie", 1)
-            TriggerClientEvent("inventory:client:ItemBox", src, QBCore.Shared.Items["butterscotchsmoothie"], "add")
+        if exports['qb-inventory']:RemoveItem(src, 'smoothiecup', 1, false, false, false) then
+            TriggerClientEvent('qb-inventory:client:ItemBox', src, QBCore.Shared.Items['smoothiecup'], 'remove', 1)
+            exports['qb-inventory']:RemoveItem(src, 'butterscotch', 1, false, false, false)
+            TriggerClientEvent('qb-inventory:client:ItemBox', src, QBCore.Shared.Items['butterscotch'], 'remove', 1)
+            exports['qb-inventory']:RemoveItem(src, 'smoothiemix', 1, false, false, false)
+            TriggerClientEvent('qb-inventory:client:ItemBox', src, QBCore.Shared.Items['smoothiemix'], 'remove', 1)
+            exports['qb-inventory']:AddItem(src, 'butterscotchsmoothie', 1, false, false, false)
+            TriggerClientEvent('qb-inventory:client:ItemBox', src, QBCore.Shared.Items['butterscotchsmoothie'], 'add', 1)
+        end
     elseif InvType == 'ox' then
-        if exports.ox_inventory:CanCarryItem(src, "butterscotchsmoothie", 1) then
-            exports.ox_inventory:RemoveItem(src,"smoothiecup", 1)
+        if exports.ox_inventory:RemoveItem(src,"smoothiecup", 1) then
             exports.ox_inventory:RemoveItem(src,"butterscotch", 1)
-            exports.ox_inventory:RemoveItem(src,"smoothiemix", 1)
-            
-            exports.ox_inventory:AddItem(src,"butterscotchsmoothie", 1)
-        else
-            SendNotify(src,"You Can\'t Carry Anymore of This Item!", 'error', 2000)
+            exports.ox_inventory:RemoveItem(src,"smoothiemix", 1)                
+            if exports.ox_inventory:CanCarryItem(src, "butterscotchsmoothie", 1) then
+                exports.ox_inventory:AddItem(src,"butterscotchsmoothie", 1)
+            else
+                SendNotify(src,Config.Language.Notifications.CantCarry, 'error', 2000)
+            end
         end
     end
 end)
@@ -380,24 +393,25 @@ RegisterNetEvent('lusty94_icecream:server:CreateSaltedCaramelSmoothie', function
     local src = source
     local Player = QBCore.Functions.GetPlayer(src)
     if InvType == 'qb' then
-        Player.Functions.RemoveItem("smoothiecup", 1)
-            TriggerClientEvent("inventory:client:ItemBox", src, QBCore.Shared.Items["smoothiecup"], "remove")
-        Player.Functions.RemoveItem("saltedcaramel", 1)
-            TriggerClientEvent("inventory:client:ItemBox", src, QBCore.Shared.Items["saltedcaramel"], "remove")
-        Player.Functions.RemoveItem("smoothiemix", 1)
-            TriggerClientEvent("inventory:client:ItemBox", src, QBCore.Shared.Items["smoothiemix"], "remove")            
-        Player.Functions.AddItem("saltedcaramelsmoothie", 1)
-            TriggerClientEvent("inventory:client:ItemBox", src, QBCore.Shared.Items["saltedcaramelsmoothie"], "add")
+        if exports['qb-inventory']:RemoveItem(src, 'smoothiecup', 1, false, false, false) then
+            TriggerClientEvent('qb-inventory:client:ItemBox', src, QBCore.Shared.Items['smoothiecup'], 'remove', 1)
+            exports['qb-inventory']:RemoveItem(src, 'saltedcaramel', 1, false, false, false)
+            TriggerClientEvent('qb-inventory:client:ItemBox', src, QBCore.Shared.Items['saltedcaramel'], 'remove', 1)
+            exports['qb-inventory']:RemoveItem(src, 'smoothiemix', 1, false, false, false)
+            TriggerClientEvent('qb-inventory:client:ItemBox', src, QBCore.Shared.Items['smoothiemix'], 'remove', 1)
+            exports['qb-inventory']:AddItem(src, 'saltedcaramelsmoothie', 1, false, false, false)
+            TriggerClientEvent('qb-inventory:client:ItemBox', src, QBCore.Shared.Items['saltedcaramelsmoothie'], 'add', 1)
+        end
     elseif InvType == 'ox' then
-        if exports.ox_inventory:CanCarryItem(src, "saltedcaramelsmoothie", 1) then
-            exports.ox_inventory:RemoveItem(src,"smoothiecup", 1)
+        if exports.ox_inventory:RemoveItem(src,"smoothiecup", 1) then
             exports.ox_inventory:RemoveItem(src,"saltedcaramel", 1)
             exports.ox_inventory:RemoveItem(src,"smoothiemix", 1)
-            
-            exports.ox_inventory:AddItem(src,"saltedcaramelsmoothie", 1)
+            if exports.ox_inventory:CanCarryItem(src, "saltedcaramelsmoothie", 1) then                
+                exports.ox_inventory:AddItem(src,"saltedcaramelsmoothie", 1)
 
-        else
-            SendNotify(src,"You Can\'t Carry Anymore of This Item!", 'error', 2000)
+            else
+                SendNotify(src,Config.Language.Notifications.CantCarry, 'error', 2000)
+            end
         end
     end
 end)
@@ -425,23 +439,24 @@ RegisterNetEvent('lusty94_icecream:server:CreateBubblegumSmoothie', function()
     local src = source
     local Player = QBCore.Functions.GetPlayer(src)
     if InvType == 'qb' then
-        Player.Functions.RemoveItem("smoothiecup", 1)
-            TriggerClientEvent("inventory:client:ItemBox", src, QBCore.Shared.Items["smoothiecup"], "remove")
-        Player.Functions.RemoveItem("bubblegum", 1)
-            TriggerClientEvent("inventory:client:ItemBox", src, QBCore.Shared.Items["bubblegum"], "remove")
-        Player.Functions.RemoveItem("smoothiemix", 1)
-            TriggerClientEvent("inventory:client:ItemBox", src, QBCore.Shared.Items["smoothiemix"], "remove")            
-        Player.Functions.AddItem("bubblegumsmoothie", 1)
-            TriggerClientEvent("inventory:client:ItemBox", src, QBCore.Shared.Items["bubblegumsmoothie"], "add")
+        if exports['qb-inventory']:RemoveItem(src, 'smoothiecup', 1, false, false, false) then
+            TriggerClientEvent('qb-inventory:client:ItemBox', src, QBCore.Shared.Items['smoothiecup'], 'remove', 1)
+            exports['qb-inventory']:RemoveItem(src, 'bubblegum', 1, false, false, false)
+            TriggerClientEvent('qb-inventory:client:ItemBox', src, QBCore.Shared.Items['bubblegum'], 'remove', 1)
+            exports['qb-inventory']:RemoveItem(src, 'smoothiemix', 1, false, false, false)
+            TriggerClientEvent('qb-inventory:client:ItemBox', src, QBCore.Shared.Items['smoothiemix'], 'remove', 1)
+            exports['qb-inventory']:AddItem(src, 'bubblegumsmoothie', 1, false, false, false)
+            TriggerClientEvent('qb-inventory:client:ItemBox', src, QBCore.Shared.Items['bubblegumsmoothie'], 'add', 1)
+        end
     elseif InvType == 'ox' then
-        if exports.ox_inventory:CanCarryItem(src, "bubblegumsmoothie", 1) then
-            exports.ox_inventory:RemoveItem(src,"smoothiecup", 1)
+        if exports.ox_inventory:RemoveItem(src,"smoothiecup", 1) then
             exports.ox_inventory:RemoveItem(src,"bubblegum", 1)
-            exports.ox_inventory:RemoveItem(src,"smoothiemix", 1)
-            
-            exports.ox_inventory:AddItem(src,"bubblegumsmoothie", 1)
-        else
-            SendNotify(src,"You Can\'t Carry Anymore of This Item!", 'error', 2000)
+            exports.ox_inventory:RemoveItem(src,"smoothiemix", 1)            
+            if exports.ox_inventory:CanCarryItem(src, "bubblegumsmoothie", 1) then
+                exports.ox_inventory:AddItem(src,"bubblegumsmoothie", 1)
+            else
+                SendNotify(src,Config.Language.Notifications.CantCarry, 'error', 2000)
+            end
         end
     end
 end)
@@ -470,23 +485,24 @@ RegisterNetEvent('lusty94_icecream:server:CreateToffeeSmoothie', function()
     local src = source
     local Player = QBCore.Functions.GetPlayer(src)
     if InvType == 'qb' then
-        Player.Functions.RemoveItem("smoothiecup", 1)
-            TriggerClientEvent("inventory:client:ItemBox", src, QBCore.Shared.Items["smoothiecup"], "remove")
-        Player.Functions.RemoveItem("toffee", 1)
-            TriggerClientEvent("inventory:client:ItemBox", src, QBCore.Shared.Items["toffee"], "remove")
-        Player.Functions.RemoveItem("smoothiemix", 1)
-            TriggerClientEvent("inventory:client:ItemBox", src, QBCore.Shared.Items["smoothiemix"], "remove")            
-        Player.Functions.AddItem("toffeesmoothie", 1)
-            TriggerClientEvent("inventory:client:ItemBox", src, QBCore.Shared.Items["toffeesmoothie"], "add")
+        if exports['qb-inventory']:RemoveItem(src, 'smoothiecup', 1, false, false, false) then
+            TriggerClientEvent('qb-inventory:client:ItemBox', src, QBCore.Shared.Items['smoothiecup'], 'remove', 1)
+            exports['qb-inventory']:RemoveItem(src, 'toffee', 1, false, false, false)
+            TriggerClientEvent('qb-inventory:client:ItemBox', src, QBCore.Shared.Items['toffee'], 'remove', 1)
+            exports['qb-inventory']:RemoveItem(src, 'smoothiemix', 1, false, false, false)
+            TriggerClientEvent('qb-inventory:client:ItemBox', src, QBCore.Shared.Items['smoothiemix'], 'remove', 1)
+            exports['qb-inventory']:AddItem(src, 'toffeesmoothie', 1, false, false, false)
+            TriggerClientEvent('qb-inventory:client:ItemBox', src, QBCore.Shared.Items['toffeesmoothie'], 'add', 1)
+        end
     elseif InvType == 'ox' then
-        if exports.ox_inventory:CanCarryItem(src, "toffeesmoothie", 1) then
-            exports.ox_inventory:RemoveItem(src,"smoothiecup", 1)
+        if exports.ox_inventory:RemoveItem(src,"smoothiecup", 1) then
             exports.ox_inventory:RemoveItem(src,"toffee", 1)
-            exports.ox_inventory:RemoveItem(src,"smoothiemix", 1)
-            
-            exports.ox_inventory:AddItem(src,"toffeesmoothie", 1)
-        else
-            SendNotify(src,"You Can\'t Carry Anymore of This Item!", 'error', 2000)
+            exports.ox_inventory:RemoveItem(src,"smoothiemix", 1)            
+            if exports.ox_inventory:CanCarryItem(src, "toffeesmoothie", 1) then
+                exports.ox_inventory:AddItem(src,"toffeesmoothie", 1)
+            else
+                SendNotify(src,Config.Language.Notifications.CantCarry, 'error', 2000)
+            end
         end
     end
 end)
@@ -514,23 +530,24 @@ RegisterNetEvent('lusty94_icecream:server:CreateCookieDoughSmoothie', function()
     local src = source
     local Player = QBCore.Functions.GetPlayer(src)
     if InvType == 'qb' then
-        Player.Functions.RemoveItem("smoothiecup", 1)
-            TriggerClientEvent("inventory:client:ItemBox", src, QBCore.Shared.Items["smoothiecup"], "remove")
-        Player.Functions.RemoveItem("cookiedough", 1)
-            TriggerClientEvent("inventory:client:ItemBox", src, QBCore.Shared.Items["cookiedough"], "remove")
-        Player.Functions.RemoveItem("smoothiemix", 1)
-            TriggerClientEvent("inventory:client:ItemBox", src, QBCore.Shared.Items["smoothiemix"], "remove")            
-        Player.Functions.AddItem("cookiedoughsmoothie", 1)
-            TriggerClientEvent("inventory:client:ItemBox", src, QBCore.Shared.Items["cookiedoughsmoothie"], "add")
+        if exports['qb-inventory']:RemoveItem(src, 'smoothiecup', 1, false, false, false) then
+            TriggerClientEvent('qb-inventory:client:ItemBox', src, QBCore.Shared.Items['smoothiecup'], 'remove', 1)
+            exports['qb-inventory']:RemoveItem(src, 'cookiedough', 1, false, false, false)
+            TriggerClientEvent('qb-inventory:client:ItemBox', src, QBCore.Shared.Items['cookiedough'], 'remove', 1)
+            exports['qb-inventory']:RemoveItem(src, 'smoothiemix', 1, false, false, false)
+            TriggerClientEvent('qb-inventory:client:ItemBox', src, QBCore.Shared.Items['smoothiemix'], 'remove', 1)
+            exports['qb-inventory']:AddItem(src, 'cookiedoughsmoothie', 1, false, false, false)
+            TriggerClientEvent('qb-inventory:client:ItemBox', src, QBCore.Shared.Items['cookiedoughsmoothie'], 'add', 1)
+        end
     elseif InvType == 'ox' then
-        if exports.ox_inventory:CanCarryItem(src, "cookiedoughmoothie", 1) then
-            exports.ox_inventory:RemoveItem(src,"smoothiecup", 1)
+        if exports.ox_inventory:RemoveItem(src,"smoothiecup", 1) then
             exports.ox_inventory:RemoveItem(src,"cookiedough", 1)
-            exports.ox_inventory:RemoveItem(src,"smoothiemix", 1)
-            
-            exports.ox_inventory:AddItem(src,"cookiedoughsmoothie", 1)
-        else
-            SendNotify(src,"You Can\'t Carry Anymore of This Item!", 'error', 2000)
+            exports.ox_inventory:RemoveItem(src,"smoothiemix", 1)                
+            if exports.ox_inventory:CanCarryItem(src, "cookiedoughmoothie", 1) then
+                exports.ox_inventory:AddItem(src,"cookiedoughsmoothie", 1)
+            else
+                SendNotify(src,Config.Language.Notifications.CantCarry, 'error', 2000)
+            end
         end
     end
 end)
@@ -569,16 +586,18 @@ RegisterNetEvent('lusty94_icecream:server:CreateTea', function()
     local src = source
     local Player = QBCore.Functions.GetPlayer(src)
     if InvType == 'qb' then
-        Player.Functions.RemoveItem("mug", 1)
-            TriggerClientEvent("inventory:client:ItemBox", src, QBCore.Shared.Items["mug"], "remove")            
-        Player.Functions.AddItem("tea", 1)
-            TriggerClientEvent("inventory:client:ItemBox", src, QBCore.Shared.Items["tea"], "add")
+        if exports['qb-inventory']:RemoveItem(src, 'mug', 1, false, false, false) then
+            TriggerClientEvent('qb-inventory:client:ItemBox', src, QBCore.Shared.Items['mug'], 'remove', 1)
+            exports['qb-inventory']:AddItem(src, 'tea', 1, false, false, false)
+            TriggerClientEvent('qb-inventory:client:ItemBox', src, QBCore.Shared.Items['tea'], 'add', 1)
+        end
     elseif InvType == 'ox' then
-        if exports.ox_inventory:CanCarryItem(src, "tea", 1) then
-            exports.ox_inventory:RemoveItem(src,"mug", 1)
-            exports.ox_inventory:AddItem(src,"tea", 1)
-        else
-            SendNotify(src,"You Can\'t Carry Anymore of This Item!", 'error', 2000)
+        if exports.ox_inventory:RemoveItem(src,"mug", 1) then
+            if exports.ox_inventory:CanCarryItem(src, "tea", 1) then
+                exports.ox_inventory:AddItem(src,"tea", 1)
+            else
+                SendNotify(src,Config.Language.Notifications.CantCarry, 'error', 2000)
+            end
         end
     end
 end)
@@ -588,16 +607,18 @@ RegisterNetEvent('lusty94_icecream:server:CreateCoffee', function()
     local src = source
     local Player = QBCore.Functions.GetPlayer(src)
     if InvType == 'qb' then
-        Player.Functions.RemoveItem("mug", 1)
-            TriggerClientEvent("inventory:client:ItemBox", src, QBCore.Shared.Items["mug"], "remove")            
-        Player.Functions.AddItem("coffee", 1)
-            TriggerClientEvent("inventory:client:ItemBox", src, QBCore.Shared.Items["coffee"], "add")
+        if exports['qb-inventory']:RemoveItem(src, 'mug', 1, false, false, false) then
+            TriggerClientEvent('qb-inventory:client:ItemBox', src, QBCore.Shared.Items['mug'], 'remove', 1)
+            exports['qb-inventory']:AddItem(src, 'coffee', 1, false, false, false)
+            TriggerClientEvent('qb-inventory:client:ItemBox', src, QBCore.Shared.Items['coffee'], 'add', 1)
+        end
     elseif InvType == 'ox' then
-        if exports.ox_inventory:CanCarryItem(src, "coffee", 1) then
-            exports.ox_inventory:RemoveItem(src,"mug", 1)
-            exports.ox_inventory:AddItem(src,"coffee", 1)
-        else
-            SendNotify(src,"You Can\'t Carry Anymore of This Item!", 'error', 2000)
+        if exports.ox_inventory:RemoveItem(src,"mug", 1) then
+            if exports.ox_inventory:CanCarryItem(src, "coffee", 1) then
+                exports.ox_inventory:AddItem(src,"coffee", 1)
+            else
+                SendNotify(src,Config.Language.Notifications.CantCarry, 'error', 2000)
+            end
         end
     end
 end)
@@ -607,16 +628,18 @@ RegisterNetEvent('lusty94_icecream:server:CreateHotChocolate', function()
     local src = source
     local Player = QBCore.Functions.GetPlayer(src)
     if InvType == 'qb' then
-        Player.Functions.RemoveItem("mug", 1)
-            TriggerClientEvent("inventory:client:ItemBox", src, QBCore.Shared.Items["mug"], "remove")            
-        Player.Functions.AddItem("hotchocolate", 1)
-            TriggerClientEvent("inventory:client:ItemBox", src, QBCore.Shared.Items["hotchocolate"], "add")
+        if exports['qb-inventory']:RemoveItem(src, 'mug', 1, false, false, false) then
+            TriggerClientEvent('qb-inventory:client:ItemBox', src, QBCore.Shared.Items['mug'], 'remove', 1)
+            exports['qb-inventory']:AddItem(src, 'hotchocolate', 1, false, false, false)
+            TriggerClientEvent('qb-inventory:client:ItemBox', src, QBCore.Shared.Items['hotchocolate'], 'add', 1)
+        end
     elseif InvType == 'ox' then
-        if exports.ox_inventory:CanCarryItem(src, "hotchocolate", 1) then
-            exports.ox_inventory:RemoveItem(src,"mug", 1)
-            exports.ox_inventory:AddItem(src,"hotchocolate", 1)
-        else
-            SendNotify(src,"You Can\'t Carry Anymore of This Item!", 'error', 2000)
+        if exports.ox_inventory:RemoveItem(src,"mug", 1) then
+            if exports.ox_inventory:CanCarryItem(src, "hotchocolate", 1) then
+                exports.ox_inventory:AddItem(src,"hotchocolate", 1)
+            else
+                SendNotify(src,Config.Language.Notifications.CantCarry, 'error', 2000)
+            end
         end
     end
 end)
@@ -651,16 +674,18 @@ RegisterNetEvent('lusty94_icecream:server:CreateCola', function()
     local src = source
     local Player = QBCore.Functions.GetPlayer(src)
     if InvType == 'qb' then
-        Player.Functions.RemoveItem("softdrinkscup", 1)
-            TriggerClientEvent("inventory:client:ItemBox", src, QBCore.Shared.Items["softdrinkscup"], "remove")            
-        Player.Functions.AddItem("cola", 1)
-            TriggerClientEvent("inventory:client:ItemBox", src, QBCore.Shared.Items["cola"], "add")
+        if exports['qb-inventory']:RemoveItem(src, 'softdrinkscup', 1, false, false, false) then
+            TriggerClientEvent('qb-inventory:client:ItemBox', src, QBCore.Shared.Items['softdrinkscup'], 'remove', 1)
+            exports['qb-inventory']:AddItem(src, 'cola', 1, false, false, false)
+            TriggerClientEvent('qb-inventory:client:ItemBox', src, QBCore.Shared.Items['cola'], 'add', 1)
+        end
     elseif InvType == 'ox' then
-        if exports.ox_inventory:CanCarryItem(src, "cola", 1) then
-            exports.ox_inventory:RemoveItem(src,"softdrinkscup", 1)
-            exports.ox_inventory:AddItem(src,"cola", 1)
-        else
-            SendNotify(src,"You Can\'t Carry Anymore of This Item!", 'error', 2000)
+        if exports.ox_inventory:RemoveItem(src,"softdrinkscup", 1) then
+            if exports.ox_inventory:CanCarryItem(src, "cola", 1) then
+                exports.ox_inventory:AddItem(src,"cola", 1)
+            else
+                SendNotify(src,Config.Language.Notifications.CantCarry, 'error', 2000)
+            end
         end
     end
 end)
@@ -670,16 +695,18 @@ RegisterNetEvent('lusty94_icecream:server:CreateLemonade', function()
     local src = source
     local Player = QBCore.Functions.GetPlayer(src)
     if InvType == 'qb' then
-        Player.Functions.RemoveItem("softdrinkscup", 1)
-            TriggerClientEvent("inventory:client:ItemBox", src, QBCore.Shared.Items["softdrinkscup"], "remove")            
-        Player.Functions.AddItem("lemonade", 1)
-            TriggerClientEvent("inventory:client:ItemBox", src, QBCore.Shared.Items["lemonade"], "add")
+        if exports['qb-inventory']:RemoveItem(src, 'softdrinkscup', 1, false, false, false) then
+            TriggerClientEvent('qb-inventory:client:ItemBox', src, QBCore.Shared.Items['softdrinkscup'], 'remove', 1)
+            exports['qb-inventory']:AddItem(src, 'lemonade', 1, false, false, false)
+            TriggerClientEvent('qb-inventory:client:ItemBox', src, QBCore.Shared.Items['lemonade'], 'add', 1)
+        end
     elseif InvType == 'ox' then
-        if exports.ox_inventory:CanCarryItem(src, "lemonade", 1) then
-            exports.ox_inventory:RemoveItem(src,"softdrinkscup", 1)
-            exports.ox_inventory:AddItem(src,"lemonade", 1)
-        else
-            SendNotify(src,"You Can\'t Carry Anymore of This Item!", 'error', 2000)
+        if exports.ox_inventory:RemoveItem(src,"softdrinkscup", 1) then
+            if exports.ox_inventory:CanCarryItem(src, "lemonade", 1) then
+                exports.ox_inventory:AddItem(src,"lemonade", 1)
+            else
+                SendNotify(src,Config.Language.Notifications.CantCarry, 'error', 2000)
+            end
         end
     end
 end)
@@ -689,16 +716,18 @@ RegisterNetEvent('lusty94_icecream:server:CreateOrangeSoda', function()
     local src = source
     local Player = QBCore.Functions.GetPlayer(src)
     if InvType == 'qb' then
-        Player.Functions.RemoveItem("softdrinkscup", 1)
-            TriggerClientEvent("inventory:client:ItemBox", src, QBCore.Shared.Items["softdrinkscup"], "remove")            
-        Player.Functions.AddItem("orangesoda", 1)
-            TriggerClientEvent("inventory:client:ItemBox", src, QBCore.Shared.Items["orangesoda"], "add")
+        if exports['qb-inventory']:RemoveItem(src, 'softdrinkscup', 1, false, false, false) then
+            TriggerClientEvent('qb-inventory:client:ItemBox', src, QBCore.Shared.Items['softdrinkscup'], 'remove', 1)
+            exports['qb-inventory']:AddItem(src, 'orangesoda', 1, false, false, false)
+            TriggerClientEvent('qb-inventory:client:ItemBox', src, QBCore.Shared.Items['orangesoda'], 'add', 1)
+        end
     elseif InvType == 'ox' then
-        if exports.ox_inventory:CanCarryItem(src, "orangesoda", 1) then
-            exports.ox_inventory:RemoveItem(src,"softdrinkscup", 1)
-            exports.ox_inventory:AddItem(src,"orangesoda", 1)
-        else
-            SendNotify(src,"You Can\'t Carry Anymore of This Item!", 'error', 2000)
+        if exports.ox_inventory:RemoveItem(src,"softdrinkscup", 1) then
+            if exports.ox_inventory:CanCarryItem(src, "orangesoda", 1) then
+                exports.ox_inventory:AddItem(src,"orangesoda", 1)
+            else
+                SendNotify(src,Config.Language.Notifications.CantCarry, 'error', 2000)
+            end
         end
     end
 end)
@@ -739,22 +768,24 @@ RegisterNetEvent('lusty94_icecream:server:CreateVanillaIceCream', function()
     local src = source
     local Player = QBCore.Functions.GetPlayer(src)
     if InvType == 'qb' then
-        Player.Functions.RemoveItem("icecreamcone", 1)
-            TriggerClientEvent("inventory:client:ItemBox", src, QBCore.Shared.Items["icecreamcone"], "remove")
-        Player.Functions.RemoveItem("vanilla", 1)
-            TriggerClientEvent("inventory:client:ItemBox", src, QBCore.Shared.Items["vanilla"], "remove")
-        Player.Functions.RemoveItem("softscoopmix", 1)
-            TriggerClientEvent("inventory:client:ItemBox", src, QBCore.Shared.Items["softscoopmix"], "remove")
-        Player.Functions.AddItem("vanillaicecream", 1)
-            TriggerClientEvent("inventory:client:ItemBox", src, QBCore.Shared.Items["vanillaicecream"], "add")
+        if exports['qb-inventory']:RemoveItem(src, 'icecreamcone', 1, false, false, false) then
+            TriggerClientEvent('qb-inventory:client:ItemBox', src, QBCore.Shared.Items['icecreamcone'], 'remove', 1)
+            exports['qb-inventory']:RemoveItem(src, 'vanilla', 1, false, false, false)
+            TriggerClientEvent('qb-inventory:client:ItemBox', src, QBCore.Shared.Items['vanilla'], 'remove', 1)
+            exports['qb-inventory']:RemoveItem(src, 'softscoopmix', 1, false, false, false)
+            TriggerClientEvent('qb-inventory:client:ItemBox', src, QBCore.Shared.Items['softscoopmix'], 'remove', 1)
+            exports['qb-inventory']:AddItem(src, 'vanillaicecream', 1, false, false, false)
+            TriggerClientEvent('qb-inventory:client:ItemBox', src, QBCore.Shared.Items['vanillaicecream'], 'add', 1)
+        end
     elseif InvType == 'ox' then
-        if exports.ox_inventory:CanCarryItem(src, "vanillaicecream", 1) then
-            exports.ox_inventory:RemoveItem(src,"icecreamcone", 1)
+        if exports.ox_inventory:RemoveItem(src,"icecreamcone", 1) then
             exports.ox_inventory:RemoveItem(src,"vanilla", 1)
             exports.ox_inventory:RemoveItem(src,"softscoopmix", 1)
-            exports.ox_inventory:AddItem(src,"vanillaicecream", 1)
-        else
-            SendNotify(src,"You Can\'t Carry Anymore of This Item!", 'error', 2000)
+            if exports.ox_inventory:CanCarryItem(src, "vanillaicecream", 1) then
+                exports.ox_inventory:AddItem(src,"vanillaicecream", 1)
+            else
+                SendNotify(src,Config.Language.Notifications.CantCarry, 'error', 2000)
+            end
         end
     end
 end)
@@ -780,22 +811,24 @@ RegisterNetEvent('lusty94_icecream:server:CreateChocolateIceCream', function()
     local src = source
     local Player = QBCore.Functions.GetPlayer(src)
     if InvType == 'qb' then
-        Player.Functions.RemoveItem("icecreamcone", 1)
-            TriggerClientEvent("inventory:client:ItemBox", src, QBCore.Shared.Items["icecreamcone"], "remove")
-        Player.Functions.RemoveItem("chocolate", 1)
-            TriggerClientEvent("inventory:client:ItemBox", src, QBCore.Shared.Items["chocolate"], "remove")
-        Player.Functions.RemoveItem("softscoopmix", 1)
-            TriggerClientEvent("inventory:client:ItemBox", src, QBCore.Shared.Items["softscoopmix"], "remove")
-        Player.Functions.AddItem("chocolateicecream", 1)
-            TriggerClientEvent("inventory:client:ItemBox", src, QBCore.Shared.Items["chocolateicecream"], "add")
+        if exports['qb-inventory']:RemoveItem(src, 'icecreamcone', 1, false, false, false) then
+            TriggerClientEvent('qb-inventory:client:ItemBox', src, QBCore.Shared.Items['icecreamcone'], 'remove', 1)
+            exports['qb-inventory']:RemoveItem(src, 'chocolate', 1, false, false, false)
+            TriggerClientEvent('qb-inventory:client:ItemBox', src, QBCore.Shared.Items['chocolate'], 'remove', 1)
+            exports['qb-inventory']:RemoveItem(src, 'softscoopmix', 1, false, false, false)
+            TriggerClientEvent('qb-inventory:client:ItemBox', src, QBCore.Shared.Items['softscoopmix'], 'remove', 1)
+            exports['qb-inventory']:AddItem(src, 'chocolateicecream', 1, false, false, false)
+            TriggerClientEvent('qb-inventory:client:ItemBox', src, QBCore.Shared.Items['chocolateicecream'], 'add', 1)
+        end
     elseif InvType == 'ox' then
-        if exports.ox_inventory:CanCarryItem(src, "chocolateicecream", 1) then
-            exports.ox_inventory:RemoveItem(src,"icecreamcone", 1)
+        if exports.ox_inventory:RemoveItem(src,"icecreamcone", 1) then
             exports.ox_inventory:RemoveItem(src,"chocolate", 1)
             exports.ox_inventory:RemoveItem(src,"softscoopmix", 1)
-            exports.ox_inventory:AddItem(src,"chocolateicecream", 1)
-        else
-            SendNotify(src,"You Can\'t Carry Anymore of This Item!", 'error', 2000)
+            if exports.ox_inventory:CanCarryItem(src, "chocolateicecream", 1) then
+                exports.ox_inventory:AddItem(src,"chocolateicecream", 1)
+            else
+                SendNotify(src,Config.Language.Notifications.CantCarry, 'error', 2000)
+            end
         end
     end
 end)
@@ -821,22 +854,24 @@ RegisterNetEvent('lusty94_icecream:server:CreateStrawberryIceCream', function()
     local src = source
     local Player = QBCore.Functions.GetPlayer(src)
     if InvType == 'qb' then
-        Player.Functions.RemoveItem("icecreamcone", 1)
-            TriggerClientEvent("inventory:client:ItemBox", src, QBCore.Shared.Items["icecreamcone"], "remove")
-        Player.Functions.RemoveItem("strawberry", 1)
-            TriggerClientEvent("inventory:client:ItemBox", src, QBCore.Shared.Items["strawberry"], "remove")
-        Player.Functions.RemoveItem("softscoopmix", 1)
-            TriggerClientEvent("inventory:client:ItemBox", src, QBCore.Shared.Items["softscoopmix"], "remove")            
-        Player.Functions.AddItem("strawberryicecream", 1)
-            TriggerClientEvent("inventory:client:ItemBox", src, QBCore.Shared.Items["strawberryicecream"], "add")
+        if exports['qb-inventory']:RemoveItem(src, 'icecreamcone', 1, false, false, false) then
+            TriggerClientEvent('qb-inventory:client:ItemBox', src, QBCore.Shared.Items['icecreamcone'], 'remove', 1)
+            exports['qb-inventory']:RemoveItem(src, 'strawberry', 1, false, false, false)
+            TriggerClientEvent('qb-inventory:client:ItemBox', src, QBCore.Shared.Items['strawberry'], 'remove', 1)
+            exports['qb-inventory']:RemoveItem(src, 'softscoopmix', 1, false, false, false)
+            TriggerClientEvent('qb-inventory:client:ItemBox', src, QBCore.Shared.Items['softscoopmix'], 'remove', 1)
+            exports['qb-inventory']:AddItem(src, 'strawberryicecream', 1, false, false, false)
+            TriggerClientEvent('qb-inventory:client:ItemBox', src, QBCore.Shared.Items['strawberryicecream'], 'add', 1)
+        end
     elseif InvType == 'ox' then
-        if exports.ox_inventory:CanCarryItem(src, "strawberryicecream", 1) then
-            exports.ox_inventory:RemoveItem(src,"icecreamcone", 1)
+        if exports.ox_inventory:RemoveItem(src,"icecreamcone", 1) then
             exports.ox_inventory:RemoveItem(src,"strawberry", 1)
             exports.ox_inventory:RemoveItem(src,"softscoopmix", 1)
-            exports.ox_inventory:AddItem(src,"strawberryicecream", 1)
-        else
-            SendNotify(src,"You Can\'t Carry Anymore of This Item!", 'error', 2000)
+            if exports.ox_inventory:CanCarryItem(src, "strawberryicecream", 1) then
+                exports.ox_inventory:AddItem(src,"strawberryicecream", 1)
+            else
+                SendNotify(src,Config.Language.Notifications.CantCarry, 'error', 2000)
+            end
         end
     end
 end)
@@ -862,22 +897,24 @@ RegisterNetEvent('lusty94_icecream:server:CreateMintIceCream', function()
     local src = source
     local Player = QBCore.Functions.GetPlayer(src)
     if InvType == 'qb' then
-        Player.Functions.RemoveItem("icecreamcone", 1)
-            TriggerClientEvent("inventory:client:ItemBox", src, QBCore.Shared.Items["icecreamcone"], "remove")
-        Player.Functions.RemoveItem("mint", 1)
-            TriggerClientEvent("inventory:client:ItemBox", src, QBCore.Shared.Items["mint"], "remove")
-        Player.Functions.RemoveItem("softscoopmix", 1)
-            TriggerClientEvent("inventory:client:ItemBox", src, QBCore.Shared.Items["softscoopmix"], "remove")
-        Player.Functions.AddItem("minticecream", 1)
-            TriggerClientEvent("inventory:client:ItemBox", src, QBCore.Shared.Items["minticecream"], "add")
+        if exports['qb-inventory']:RemoveItem(src, 'icecreamcone', 1, false, false, false) then
+            TriggerClientEvent('qb-inventory:client:ItemBox', src, QBCore.Shared.Items['icecreamcone'], 'remove', 1)
+            exports['qb-inventory']:RemoveItem(src, 'mint', 1, false, false, false)
+            TriggerClientEvent('qb-inventory:client:ItemBox', src, QBCore.Shared.Items['mint'], 'remove', 1)
+            exports['qb-inventory']:RemoveItem(src, 'softscoopmix', 1, false, false, false)
+            TriggerClientEvent('qb-inventory:client:ItemBox', src, QBCore.Shared.Items['softscoopmix'], 'remove', 1)
+            exports['qb-inventory']:AddItem(src, 'minticecream', 1, false, false, false)
+            TriggerClientEvent('qb-inventory:client:ItemBox', src, QBCore.Shared.Items['minticecream'], 'add', 1)
+        end
     elseif InvType == 'ox' then
-        if exports.ox_inventory:CanCarryItem(src, "minticecream", 1) then
-            exports.ox_inventory:RemoveItem(src,"icecreamcone", 1)
-            exports.ox_inventory:RemoveItem(src,"mint", 1)
-            exports.ox_inventory:RemoveItem(src,"softscoopmix", 1)
-            exports.ox_inventory:AddItem(src,"minticecream", 1)
-        else
-            SendNotify(src,"You Can\'t Carry Anymore of This Item!", 'error', 2000)
+        if exports.ox_inventory:RemoveItem(src,"icecreamcone", 1) then
+            if exports.ox_inventory:CanCarryItem(src, "minticecream", 1) then
+                exports.ox_inventory:RemoveItem(src,"mint", 1)
+                exports.ox_inventory:RemoveItem(src,"softscoopmix", 1)
+                exports.ox_inventory:AddItem(src,"minticecream", 1)
+            else
+                SendNotify(src,Config.Language.Notifications.CantCarry, 'error', 2000)
+            end
         end
     end
 end)
@@ -903,22 +940,24 @@ RegisterNetEvent('lusty94_icecream:server:CreatePistachioIceCream', function()
     local src = source
     local Player = QBCore.Functions.GetPlayer(src)
     if InvType == 'qb' then
-        Player.Functions.RemoveItem("icecreamcone", 1)
-            TriggerClientEvent("inventory:client:ItemBox", src, QBCore.Shared.Items["icecreamcone"], "remove")
-        Player.Functions.RemoveItem("pistachio", 1)
-            TriggerClientEvent("inventory:client:ItemBox", src, QBCore.Shared.Items["pistachio"], "remove")
-        Player.Functions.RemoveItem("softscoopmix", 1)
-            TriggerClientEvent("inventory:client:ItemBox", src, QBCore.Shared.Items["softscoopmix"], "remove")            
-        Player.Functions.AddItem("pistachioicecream", 1)
-            TriggerClientEvent("inventory:client:ItemBox", src, QBCore.Shared.Items["pistachioicecream"], "add")
+        if exports['qb-inventory']:RemoveItem(src, 'icecreamcone', 1, false, false, false) then
+            TriggerClientEvent('qb-inventory:client:ItemBox', src, QBCore.Shared.Items['icecreamcone'], 'remove', 1)
+            exports['qb-inventory']:RemoveItem(src, 'pistachio', 1, false, false, false)
+            TriggerClientEvent('qb-inventory:client:ItemBox', src, QBCore.Shared.Items['pistachio'], 'remove', 1)
+            exports['qb-inventory']:RemoveItem(src, 'softscoopmix', 1, false, false, false)
+            TriggerClientEvent('qb-inventory:client:ItemBox', src, QBCore.Shared.Items['softscoopmix'], 'remove', 1)
+            exports['qb-inventory']:AddItem(src, 'pistachioicecream', 1, false, false, false)
+            TriggerClientEvent('qb-inventory:client:ItemBox', src, QBCore.Shared.Items['pistachioicecream'], 'add', 1)
+        end
     elseif InvType == 'ox' then
-        if exports.ox_inventory:CanCarryItem(src, "pistachioicecream", 1) then
-            exports.ox_inventory:RemoveItem(src,"icecreamcone", 1)
+        if exports.ox_inventory:RemoveItem(src,"icecreamcone", 1) then
             exports.ox_inventory:RemoveItem(src,"pistachio", 1)
             exports.ox_inventory:RemoveItem(src,"softscoopmix", 1)
-            exports.ox_inventory:AddItem(src,"pistachioicecream", 1)
-        else
-            SendNotify(src,"You Can\'t Carry Anymore of This Item!", 'error', 2000)
+            if exports.ox_inventory:CanCarryItem(src, "pistachioicecream", 1) then
+                exports.ox_inventory:AddItem(src,"pistachioicecream", 1)
+            else
+                SendNotify(src,Config.Language.Notifications.CantCarry, 'error', 2000)
+            end
         end
     end
 end)
@@ -944,22 +983,24 @@ RegisterNetEvent('lusty94_icecream:server:CreateButterScotchIceCream', function(
     local src = source
     local Player = QBCore.Functions.GetPlayer(src)
     if InvType == 'qb' then
-        Player.Functions.RemoveItem("icecreamcone", 1)
-            TriggerClientEvent("inventory:client:ItemBox", src, QBCore.Shared.Items["icecreamcone"], "remove")
-        Player.Functions.RemoveItem("butterscotch", 1)
-            TriggerClientEvent("inventory:client:ItemBox", src, QBCore.Shared.Items["butterscotch"], "remove")
-        Player.Functions.RemoveItem("softscoopmix", 1)
-            TriggerClientEvent("inventory:client:ItemBox", src, QBCore.Shared.Items["softscoopmix"], "remove")            
-        Player.Functions.AddItem("butterscotchicecream", 1)
-            TriggerClientEvent("inventory:client:ItemBox", src, QBCore.Shared.Items["butterscotchicecream"], "add")
+        if exports['qb-inventory']:RemoveItem(src, 'icecreamcone', 1, false, false, false) then
+            TriggerClientEvent('qb-inventory:client:ItemBox', src, QBCore.Shared.Items['icecreamcone'], 'remove', 1)
+            exports['qb-inventory']:RemoveItem(src, 'butterscotch', 1, false, false, false)
+            TriggerClientEvent('qb-inventory:client:ItemBox', src, QBCore.Shared.Items['butterscotch'], 'remove', 1)
+            exports['qb-inventory']:RemoveItem(src, 'softscoopmix', 1, false, false, false)
+            TriggerClientEvent('qb-inventory:client:ItemBox', src, QBCore.Shared.Items['softscoopmix'], 'remove', 1)
+            exports['qb-inventory']:AddItem(src, 'butterscotchicecream', 1, false, false, false)
+            TriggerClientEvent('qb-inventory:client:ItemBox', src, QBCore.Shared.Items['butterscotchicecream'], 'add', 1)
+        end
     elseif InvType == 'ox' then
-        if exports.ox_inventory:CanCarryItem(src, "butterscotchicecream", 1) then
-            exports.ox_inventory:RemoveItem(src,"icecreamcone", 1)
+        if exports.ox_inventory:RemoveItem(src,"icecreamcone", 1) then
             exports.ox_inventory:RemoveItem(src,"butterscotch", 1)
             exports.ox_inventory:RemoveItem(src,"softscoopmix", 1)
-            exports.ox_inventory:AddItem(src,"butterscotchicecream", 1)
-        else
-            SendNotify(src,"You Can\'t Carry Anymore of This Item!", 'error', 2000)
+            if exports.ox_inventory:CanCarryItem(src, "butterscotchicecream", 1) then
+                exports.ox_inventory:AddItem(src,"butterscotchicecream", 1)
+            else
+                SendNotify(src,Config.Language.Notifications.CantCarry, 'error', 2000)
+            end
         end
     end
 end)
@@ -985,22 +1026,24 @@ RegisterNetEvent('lusty94_icecream:server:CreateSaltedCaramelIceCream', function
     local src = source
     local Player = QBCore.Functions.GetPlayer(src)
     if InvType == 'qb' then
-        Player.Functions.RemoveItem("icecreamcone", 1)
-            TriggerClientEvent("inventory:client:ItemBox", src, QBCore.Shared.Items["icecreamcone"], "remove")
-        Player.Functions.RemoveItem("saltedcaramel", 1)
-            TriggerClientEvent("inventory:client:ItemBox", src, QBCore.Shared.Items["saltedcaramel"], "remove")
-        Player.Functions.RemoveItem("softscoopmix", 1)
-            TriggerClientEvent("inventory:client:ItemBox", src, QBCore.Shared.Items["softscoopmix"], "remove")            
-        Player.Functions.AddItem("saltedcaramelicecream", 1)
-            TriggerClientEvent("inventory:client:ItemBox", src, QBCore.Shared.Items["saltedcaramelicecream"], "add")
+        if exports['qb-inventory']:RemoveItem(src, 'icecreamcone', 1, false, false, false) then
+            TriggerClientEvent('qb-inventory:client:ItemBox', src, QBCore.Shared.Items['icecreamcone'], 'remove', 1)
+            exports['qb-inventory']:RemoveItem(src, 'saltedcaramel', 1, false, false, false)
+            TriggerClientEvent('qb-inventory:client:ItemBox', src, QBCore.Shared.Items['saltedcaramel'], 'remove', 1)
+            exports['qb-inventory']:RemoveItem(src, 'softscoopmix', 1, false, false, false)
+            TriggerClientEvent('qb-inventory:client:ItemBox', src, QBCore.Shared.Items['softscoopmix'], 'remove', 1)
+            exports['qb-inventory']:AddItem(src, 'saltedcaramelicecream', 1, false, false, false)
+            TriggerClientEvent('qb-inventory:client:ItemBox', src, QBCore.Shared.Items['saltedcaramelicecream'], 'add', 1)
+        end
     elseif InvType == 'ox' then
-        if exports.ox_inventory:CanCarryItem(src, "saltedcaramelicecream", 1) then
-            exports.ox_inventory:RemoveItem(src,"icecreamcone", 1)
+        if exports.ox_inventory:RemoveItem(src,"icecreamcone", 1) then
             exports.ox_inventory:RemoveItem(src,"saltedcaramel", 1)
             exports.ox_inventory:RemoveItem(src,"softscoopmix", 1)
-            exports.ox_inventory:AddItem(src,"saltedcaramelicecream", 1)
-        else
-            SendNotify(src,"You Can\'t Carry Anymore of This Item!", 'error', 2000)
+            if exports.ox_inventory:CanCarryItem(src, "saltedcaramelicecream", 1) then
+                exports.ox_inventory:AddItem(src,"saltedcaramelicecream", 1)
+            else
+                SendNotify(src,Config.Language.Notifications.CantCarry, 'error', 2000)
+            end
         end
     end
 end)
@@ -1026,22 +1069,24 @@ RegisterNetEvent('lusty94_icecream:server:CreateBubblegumIceCream', function()
     local src = source
     local Player = QBCore.Functions.GetPlayer(src)
     if InvType == 'qb' then
-        Player.Functions.RemoveItem("icecreamcone", 1)
-            TriggerClientEvent("inventory:client:ItemBox", src, QBCore.Shared.Items["icecreamcone"], "remove")
-        Player.Functions.RemoveItem("bubblegum", 1)
-            TriggerClientEvent("inventory:client:ItemBox", src, QBCore.Shared.Items["bubblegum"], "remove")
-        Player.Functions.RemoveItem("softscoopmix", 1)
-            TriggerClientEvent("inventory:client:ItemBox", src, QBCore.Shared.Items["softscoopmix"], "remove")            
-        Player.Functions.AddItem("bubblegumicecream", 1)
-            TriggerClientEvent("inventory:client:ItemBox", src, QBCore.Shared.Items["bubblegumicecream"], "add")
+        if exports['qb-inventory']:RemoveItem(src, 'icecreamcone', 1, false, false, false) then
+            TriggerClientEvent('qb-inventory:client:ItemBox', src, QBCore.Shared.Items['icecreamcone'], 'remove', 1)
+            exports['qb-inventory']:RemoveItem(src, 'bubblegum', 1, false, false, false)
+            TriggerClientEvent('qb-inventory:client:ItemBox', src, QBCore.Shared.Items['bubblegum'], 'remove', 1)
+            exports['qb-inventory']:RemoveItem(src, 'softscoopmix', 1, false, false, false)
+            TriggerClientEvent('qb-inventory:client:ItemBox', src, QBCore.Shared.Items['softscoopmix'], 'remove', 1)
+            exports['qb-inventory']:AddItem(src, 'bubblegumicecream', 1, false, false, false)
+            TriggerClientEvent('qb-inventory:client:ItemBox', src, QBCore.Shared.Items['bubblegumicecream'], 'add', 1)
+        end
     elseif InvType == 'ox' then
-        if exports.ox_inventory:CanCarryItem(src, "bubblegumicecream", 1) then
-            exports.ox_inventory:RemoveItem(src,"icecreamcone", 1)
+        if exports.ox_inventory:RemoveItem(src,"icecreamcone", 1) then
             exports.ox_inventory:RemoveItem(src,"bubblegum", 1)
             exports.ox_inventory:RemoveItem(src,"softscoopmix", 1)
-            exports.ox_inventory:AddItem(src,"bubblegumicecream", 1)
-        else
-            SendNotify(src,"You Can\'t Carry Anymore of This Item!", 'error', 2000)
+            if exports.ox_inventory:CanCarryItem(src, "bubblegumicecream", 1) then
+                exports.ox_inventory:AddItem(src,"bubblegumicecream", 1)
+            else
+                SendNotify(src,Config.Language.Notifications.CantCarry, 'error', 2000)
+            end
         end
     end
 end)
@@ -1067,22 +1112,24 @@ RegisterNetEvent('lusty94_icecream:server:CreateToffeeIceCream', function()
     local src = source
     local Player = QBCore.Functions.GetPlayer(src)
     if InvType == 'qb' then
-        Player.Functions.RemoveItem("icecreamcone", 1)
-            TriggerClientEvent("inventory:client:ItemBox", src, QBCore.Shared.Items["icecreamcone"], "remove")
-        Player.Functions.RemoveItem("toffee", 1)
-            TriggerClientEvent("inventory:client:ItemBox", src, QBCore.Shared.Items["toffee"], "remove")
-        Player.Functions.RemoveItem("softscoopmix", 1)
-            TriggerClientEvent("inventory:client:ItemBox", src, QBCore.Shared.Items["softscoopmix"], "remove")            
-        Player.Functions.AddItem("toffeeicecream", 1)
-            TriggerClientEvent("inventory:client:ItemBox", src, QBCore.Shared.Items["toffeeicecream"], "add")
+        if exports['qb-inventory']:RemoveItem(src, 'icecreamcone', 1, false, false, false) then
+            TriggerClientEvent('qb-inventory:client:ItemBox', src, QBCore.Shared.Items['icecreamcone'], 'remove', 1)
+            exports['qb-inventory']:RemoveItem(src, 'toffee', 1, false, false, false)
+            TriggerClientEvent('qb-inventory:client:ItemBox', src, QBCore.Shared.Items['toffee'], 'remove', 1)
+            exports['qb-inventory']:RemoveItem(src, 'softscoopmix', 1, false, false, false)
+            TriggerClientEvent('qb-inventory:client:ItemBox', src, QBCore.Shared.Items['softscoopmix'], 'remove', 1)
+            exports['qb-inventory']:AddItem(src, 'toffeeicecream', 1, false, false, false)
+            TriggerClientEvent('qb-inventory:client:ItemBox', src, QBCore.Shared.Items['toffeeicecream'], 'add', 1)
+        end
     elseif InvType == 'ox' then
-        if exports.ox_inventory:CanCarryItem(src, "toffeeicecream", 1) then
-            exports.ox_inventory:RemoveItem(src,"icecreamcone", 1)
+        if exports.ox_inventory:RemoveItem(src,"icecreamcone", 1) then
             exports.ox_inventory:RemoveItem(src,"toffee", 1)
             exports.ox_inventory:RemoveItem(src,"softscoopmix", 1)
-            exports.ox_inventory:AddItem(src,"toffeeicecream", 1)
-        else
-            SendNotify(src,"You Can\'t Carry Anymore of This Item!", 'error', 2000)
+            if exports.ox_inventory:CanCarryItem(src, "toffeeicecream", 1) then
+                exports.ox_inventory:AddItem(src,"toffeeicecream", 1)
+            else
+                SendNotify(src,Config.Language.Notifications.CantCarry, 'error', 2000)
+            end
         end
     end
 end)
@@ -1108,22 +1155,24 @@ RegisterNetEvent('lusty94_icecream:server:CreateCookieDoughIceCream', function()
     local src = source
     local Player = QBCore.Functions.GetPlayer(src)
     if InvType == 'qb' then
-        Player.Functions.RemoveItem("icecreamcone", 1)
-            TriggerClientEvent("inventory:client:ItemBox", src, QBCore.Shared.Items["icecreamcone"], "remove")
-        Player.Functions.RemoveItem("cookiedough", 1)
-            TriggerClientEvent("inventory:client:ItemBox", src, QBCore.Shared.Items["cookiedough"], "remove")
-        Player.Functions.RemoveItem("softscoopmix", 1)
-            TriggerClientEvent("inventory:client:ItemBox", src, QBCore.Shared.Items["softscoopmix"], "remove")            
-        Player.Functions.AddItem("cookiedoughicecream", 1)
-            TriggerClientEvent("inventory:client:ItemBox", src, QBCore.Shared.Items["cookiedoughicecream"], "add")
+        if exports['qb-inventory']:RemoveItem(src, 'icecreamcone', 1, false, false, false) then
+            TriggerClientEvent('qb-inventory:client:ItemBox', src, QBCore.Shared.Items['icecreamcone'], 'remove', 1)
+            exports['qb-inventory']:RemoveItem(src, 'cookiedough', 1, false, false, false)
+            TriggerClientEvent('qb-inventory:client:ItemBox', src, QBCore.Shared.Items['cookiedough'], 'remove', 1)
+            exports['qb-inventory']:RemoveItem(src, 'softscoopmix', 1, false, false, false)
+            TriggerClientEvent('qb-inventory:client:ItemBox', src, QBCore.Shared.Items['softscoopmix'], 'remove', 1)
+            exports['qb-inventory']:AddItem(src, 'cookiedoughicecream', 1, false, false, false)
+            TriggerClientEvent('qb-inventory:client:ItemBox', src, QBCore.Shared.Items['cookiedoughicecream'], 'add', 1)
+        end
     elseif InvType == 'ox' then
-        if exports.ox_inventory:CanCarryItem(src, "cookiedoughicecream", 1) then
-            exports.ox_inventory:RemoveItem(src,"icecreamcone", 1)
+        if exports.ox_inventory:RemoveItem(src,"icecreamcone", 1) then
             exports.ox_inventory:RemoveItem(src,"cookiedough", 1)
             exports.ox_inventory:RemoveItem(src,"softscoopmix", 1)
-            exports.ox_inventory:AddItem(src,"cookiedoughicecream", 1)
-        else
-            SendNotify(src,"You Can\'t Carry Anymore of This Item!", 'error', 2000)
+            if exports.ox_inventory:CanCarryItem(src, "cookiedoughicecream", 1) then
+                exports.ox_inventory:AddItem(src,"cookiedoughicecream", 1)
+            else
+                SendNotify(src,Config.Language.Notifications.CantCarry, 'error', 2000)
+            end
         end
     end
 end)
@@ -1210,6 +1259,102 @@ if Config.UseJimConsumables then
     for k, v in pairs(foodTable) do TriggerEvent("jim-consumables:server:syncAddItem", k, v) end
     for k, v in pairs(emoteTable) do TriggerEvent("jim-consumables:server:syncAddEmote", k, v) end
 end
+
+
+
+
+
+---------------------------< QB-INVENTORY SHOPS / STASHES >----------------------------------------
+--ingredients shop
+RegisterNetEvent('lusty94_icecream:server:IngredientsFridge', function()
+    local src = source
+    local Player = QBCore.Functions.GetPlayer(src)
+    local iceCreamIngredients = {
+        {name = "softscoopmix",   price = 0, amount = 100000, info = {}, type = "item", slot = 1,},
+        {name = "smoothiemix",    price = 0, amount = 100000, info = {}, type = "item", slot = 2,},
+        {name = "vanilla",        price = 0, amount = 100000, info = {}, type = "item", slot = 3,},
+        {name = "chocolate",      price = 0, amount = 100000, info = {}, type = "item", slot = 4,},
+        {name = "strawberry",     price = 0, amount = 100000, info = {}, type = "item", slot = 5,},
+        {name = "mint",           price = 0, amount = 100000, info = {}, type = "item", slot = 6,},
+        {name = "pistachio",      price = 0, amount = 100000, info = {}, type = "item", slot = 7,},
+        {name = "butterscotch",   price = 0, amount = 100000, info = {}, type = "item", slot = 8,},
+        {name = "saltedcaramel",  price = 0, amount = 100000, info = {}, type = "item", slot = 9,},
+        {name = "bubblegum",      price = 0, amount = 100000, info = {}, type = "item", slot = 10,},
+        {name = "toffee",        price = 0, amount = 100000, info = {}, type = "item", slot = 11,},
+        {name = "cookiedough",   price = 0, amount = 100000, info = {}, type = "item", slot = 12,},
+    }
+    exports['qb-inventory']:CreateShop({
+        name = 'iceCreamIngredients',
+        label = 'Ice Cream Ingredients',
+        slots = 12,
+        items = iceCreamIngredients
+    })
+    if Player then
+        exports['qb-inventory']:OpenShop(source, 'iceCreamIngredients')
+    end
+end)
+
+--snacks shop
+RegisterNetEvent('lusty94_icecream:server:SnackShelf', function()
+    local src = source
+    local Player = QBCore.Functions.GetPlayer(src)
+    local iceCreamSnacks = {
+        {name = "vanillacupcake",     price = 0, amount = 100000, info = {}, type = "item", slot = 1,},
+        {name = "chocolatecupcake",   price = 0, amount = 100000, info = {}, type = "item", slot = 2,},
+        {name = "chocolatebar",       price = 0, amount = 100000, info = {}, type = "item", slot = 3,},
+        {name = "jamdoughnut",        price = 0, amount = 100000, info = {}, type = "item", slot = 4,},
+        {name = "sugardoughnut",      price = 0, amount = 100000, info = {}, type = "item", slot = 5,},
+        {name = "custarddoughnut",    price = 0, amount = 100000, info = {}, type = "item", slot = 6,},
+        {name = "chocolatedoughnut",  price = 0, amount = 100000, info = {}, type = "item", slot = 7,},
+    }
+    exports['qb-inventory']:CreateShop({
+        name = 'iceCreamSnacks',
+        label = 'Ice Cream Snacks',
+        slots = 7,
+        items = iceCreamSnacks
+    })
+    if Player then
+        exports['qb-inventory']:OpenShop(source, 'iceCreamSnacks')
+    end
+end)
+
+--storage fridge
+RegisterNetEvent('lusty94_icecream:server:StorageFridge', function()
+    local src = source
+    local Player = QBCore.Functions.GetPlayer(src)
+    local stashName = 'Ice Cream Storage Fridge'
+    local stashInfo = {
+        weight = 100000000,
+        slots = 64,
+    }
+    if Player then
+        exports['qb-inventory']:OpenInventory(src, stashName, {
+            maxweight = stashInfo.weight,
+            slots = stashInfo.slots,
+        })
+    end
+end)
+
+--collection tray
+RegisterNetEvent('lusty94_icecream:server:CollectionTray', function()
+    local src = source
+    local Player = QBCore.Functions.GetPlayer(src)
+    local stashName = 'Ice Cream Collection Tray'
+    local stashInfo = {
+        weight = 1000000,
+        slots = 6,
+    }
+    if Player then
+        exports['qb-inventory']:OpenInventory(src, stashName, {
+            maxweight = stashInfo.weight,
+            slots = stashInfo.slots,
+        })
+    end
+end)
+
+
+---------------------------< OX_INVENTORY SHOPS / STASHES >----------------------------------------
+
 
 --ingredients shop
 function IceCreamIngredients()
@@ -1307,4 +1452,3 @@ local function CheckVersion()
 	end)
 end
 CheckVersion()
-

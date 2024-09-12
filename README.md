@@ -20,15 +20,11 @@ SCRIPT SUPPORT VIA DISCORD: https://discord.gg/BJGFrThmA8
 - Create 10 different flavours of ice cream
 - Create soft drinks
 - Create hot drinks
-
-- Custom spawned props inside the MLO to interact with for certain events [management menu and ingredients fridge]
 - Management menu system to hire / fire employees & much more
 - Payment till charge customers for orders
 - Clothing lockers to change outfits
 - Custom sounds when performing certain actions such as making smoothies and ice creams [REQUIRES_INTERACT_SOUND]
-
 - Extensive config file
-- Change core settings to suit your server such astimers, notify lengths, event names and much more
 - Support for [ANY] MLO or building - moveable target locations via config file
 
 
@@ -36,11 +32,9 @@ SCRIPT SUPPORT VIA DISCORD: https://discord.gg/BJGFrThmA8
 
 ## DEPENDENCIES
 
-- [Polar Ice MLO](https://forum.cfx.re/t/free-polar-ice-mlo/5166033) [CAN BE MOVED TO ANOTHER MLO BY MOVING TARGET LOCATIONS IN CONFIG]
+- [Polar Ice MLO](https://forum.cfx.re/t/free-polar-ice-mlo/5166033)
 - [qb-core](https://github.com/qbcore-framework/qb-core)
 - [qb-target](https://github.com/qbcore-framework/qb-target)
-- [qb-menu](https://github.com/qbcore-framework/qb-menu)
-- [qb-input](https://github.com/qbcore-framework/qb-input)
 - [qb-inventory](https://github.com/qbcore-framework/qb-inventory)
 - [ox_lib](https://github.com/overextended/ox_lib/releases/)
 - [jim-consumables](https://github.com/jimathy/jim-consumables)
@@ -52,17 +46,17 @@ SCRIPT SUPPORT VIA DISCORD: https://discord.gg/BJGFrThmA8
 
 ## INSTALLATION
 
-- Add the ##ITEMS snippet below into your core/shared/items.lua file
+
+- Add the ##ITEMS snippet below into your core/shared/items.lua file - ox_inventory users add the items to inventory/data/items.lua
+- Add all .png images inside [images] folder into your inventory/html/images folder - ox_inventory users place images inside inventory/web/images
 - Add the ##JOB snippet below to your core/shared/jobs.lua
-- Add all .png images inside [images] folder into your inventory/html/images folder for ox_inventory its in web/images
 - Add all .ogg files inside [interact-sounds] folder into your interact-sound/client/sounds folder
 
 
 
-## OX_INVENTORY
-
-- This resource creates and registers shops and stashes for ox_inventory automatically
-- if using ox_invnetory item names for shops etc are located in limeys_server.lua - edit prices or names there
+## OX INVENTORY USERS
+- items list is at the bottom of this file under ##OX_INVENTORY ITEMS
+- this resource creates shops and stashes automatically, to change item names or prices / stash weight or slots edit the respective function in icecream_server.lua
 
 
 
@@ -75,8 +69,9 @@ SCRIPT SUPPORT VIA DISCORD: https://discord.gg/BJGFrThmA8
 
 ## CONSUMABLES
 
-- Set Config.UseJimConsumables to true to enable jim-consumables to handle the useable food and drink items
-- ENSURE JIM-CONSUMABLES STARTS BEFORE THIS SCRIPT TO FUNCTION CORRECTLY
+- Set Config.UseJimConsumables to true to enable jim-consumables to handle the useable food and drink items - if getting any issues perhaps set to false and add item names to jim-consuambles itself - if missing any props this is likely due to missing files in your emotes folder
+
+- Make sure jim-consumables starts before this resource as per any dependency
 
 
 ## JOB
@@ -99,7 +94,7 @@ SCRIPT SUPPORT VIA DISCORD: https://discord.gg/BJGFrThmA8
 
 
 
-## ITEMS
+## QB-CORE ITEMS
 
 ```
 
@@ -165,5 +160,552 @@ SCRIPT SUPPORT VIA DISCORD: https://discord.gg/BJGFrThmA8
         bubblegumicecream 			                = {name = 'bubblegumicecream', 			 	  	  	label = 'Bubblegum Ice Cream', 		        weight = 200, 		type = 'item', 					image = 'bubblegumicecream.png', 				    unique = false, 	    useable = true, 	shouldClose = true,   combinable = nil,   description = 'Bubblegum Ice Cream'},
         toffeeicecream 			                    = {name = 'toffeeicecream', 			 	  	  	label = 'Toffee Ice Cream', 		        weight = 200, 		type = 'item', 					image = 'toffeeicecream.png', 				        unique = false, 	    useable = true, 	shouldClose = true,   combinable = nil,   description = 'Toffee Ice Cream'},
         cookiedoughicecream 			            = {name = 'cookiedoughicecream', 			 	  	label = 'Cookie Dough Ice Cream', 		    weight = 200, 		type = 'item', 					image = 'cookiedoughicecream.png', 				    unique = false, 	    useable = true, 	shouldClose = true,   combinable = nil,   description = 'Cookie Dough Ice Cream'},
+
+```
+
+
+## OX_INVENTORY ITEMS
+
+```
+
+	["saltedcaramelsmoothie"] = {
+		label = "Salted Caramel Smoothie",
+		weight = 200,
+		stack = true,
+		close = true,
+		description = "Salted Caramel Smoothie",
+		client = {
+			image = "saltedcaramelsmoothie.png",
+		}
+	},
+
+	["pistachiosmoothie"] = {
+		label = "Pistachio Smoothie",
+		weight = 200,
+		stack = true,
+		close = true,
+		description = "Pistachio Smoothie",
+		client = {
+			image = "pistachiosmoothie.png",
+		}
+	},
+
+	["toffeesmoothie"] = {
+		label = "Toffee Smoothie",
+		weight = 200,
+		stack = true,
+		close = true,
+		description = "Toffee Smoothie",
+		client = {
+			image = "toffeesmoothie.png",
+		}
+	},
+
+	["mug"] = {
+		label = "Mug",
+		weight = 200,
+		stack = true,
+		close = true,
+		description = "Mug",
+		client = {
+			image = "mug.png",
+		}
+	},
+
+	["hotchocolate"] = {
+		label = "Hot Chocolate",
+		weight = 200,
+		stack = true,
+		close = true,
+		description = "Hot Chocolate",
+		client = {
+			image = "hotchocolate.png",
+		}
+	},
+
+	["cola"] = {
+		label = "Cola",
+		weight = 200,
+		stack = true,
+		close = true,
+		description = "Cola",
+		client = {
+			image = "cola.png",
+		}
+	},
+
+	["softscoopmix"] = {
+		label = "Soft Scoop Mix",
+		weight = 200,
+		stack = true,
+		close = true,
+		description = "Soft Scoop Ice Cream Mix",
+		client = {
+			image = "softscoopmix.png",
+		}
+	},
+
+	["minticecream"] = {
+		label = "Mint Ice Cream",
+		weight = 200,
+		stack = true,
+		close = true,
+		description = "Mint Ice Cream",
+		client = {
+			image = "minticecream.png",
+		}
+	},
+
+	["strawberry"] = {
+		label = "Strawberry",
+		weight = 200,
+		stack = true,
+		close = true,
+		description = "Strawberry",
+		client = {
+			image = "strawberry.png",
+		}
+	},
+
+	["cookiedoughsmoothie"] = {
+		label = "Cookie Dough Smoothie",
+		weight = 200,
+		stack = true,
+		close = true,
+		description = "Cookie Dough Smoothie",
+		client = {
+			image = "cookiedoughsmoothie.png",
+		}
+	},
+
+	["bubblegumicecream"] = {
+		label = "Bubblegum Ice Cream",
+		weight = 200,
+		stack = true,
+		close = true,
+		description = "Bubblegum Ice Cream",
+		client = {
+			image = "bubblegumicecream.png",
+		}
+	},
+
+	["mintsmoothie"] = {
+		label = "Mint Smoothie",
+		weight = 200,
+		stack = true,
+		close = true,
+		description = "Mint Smoothie",
+		client = {
+			image = "mintsmoothie.png",
+		}
+	},
+
+	["bubblegum"] = {
+		label = "Bubblegum",
+		weight = 200,
+		stack = true,
+		close = true,
+		description = "Bubblegum",
+		client = {
+			image = "bubblegum.png",
+		}
+	},
+
+	["bubblegumsmoothie"] = {
+		label = "Bubblegum Smoothie",
+		weight = 200,
+		stack = true,
+		close = true,
+		description = "Bubblegum Smoothie",
+		client = {
+			image = "bubblegumsmoothie.png",
+		}
+	},
+
+	["butterscotchsmoothie"] = {
+		label = "Butter Scotch Smoothie",
+		weight = 200,
+		stack = true,
+		close = true,
+		description = "Butter Scotch Smoothie",
+		client = {
+			image = "butterscotchsmoothie.png",
+		}
+	},
+
+	["chocolateicecream"] = {
+		label = "Chocolate Ice Cream",
+		weight = 200,
+		stack = true,
+		close = true,
+		description = "Chocolate Ice Cream",
+		client = {
+			image = "chocolateicecream.png",
+		}
+	},
+
+	["tea"] = {
+		label = "Tea",
+		weight = 200,
+		stack = true,
+		close = true,
+		description = "Hot Tea",
+		client = {
+			image = "tea.png",
+		}
+	},
+
+	["lemonade"] = {
+		label = "Lemonade",
+		weight = 200,
+		stack = true,
+		close = true,
+		description = "Lemonade",
+		client = {
+			image = "lemonade.png",
+		}
+	},
+
+	["butterscotch"] = {
+		label = "Butter Scotch",
+		weight = 200,
+		stack = true,
+		close = true,
+		description = "Butter Scotch",
+		client = {
+			image = "butterscotch.png",
+		}
+	},
+
+	["butterscotchicecream"] = {
+		label = "Butter Scotch Ice Cream",
+		weight = 200,
+		stack = true,
+		close = true,
+		description = "Butter Scotch Ice Cream",
+		client = {
+			image = "butterscotchicecream.png",
+		}
+	},
+
+	["chocolatecupcake"] = {
+		label = "Chocolate Cupcake",
+		weight = 200,
+		stack = true,
+		close = true,
+		description = "Chocolate Cupcake",
+		client = {
+			image = "chocolatecupcake.png",
+		}
+	},
+
+	["chocolatedoughnut"] = {
+		label = "Chocolate Doughnut",
+		weight = 200,
+		stack = true,
+		close = true,
+		description = "Chocolate Doughnut",
+		client = {
+			image = "chocolatedoughnut.png",
+		}
+	},
+
+	["strawberryicecream"] = {
+		label = "Strawberry Ice Cream",
+		weight = 200,
+		stack = true,
+		close = true,
+		description = "Strawberry Ice Cream",
+		client = {
+			image = "strawberryicecream.png",
+		}
+	},
+
+	["orangesoda"] = {
+		label = "Orange Soda",
+		weight = 200,
+		stack = true,
+		close = true,
+		description = "Orange Soda",
+		client = {
+			image = "orangesoda.png",
+		}
+	},
+
+	["toffee"] = {
+		label = "Toffee",
+		weight = 200,
+		stack = true,
+		close = true,
+		description = "Toffee",
+		client = {
+			image = "toffee.png",
+		}
+	},
+
+	["vanillaicecream"] = {
+		label = "Vanilla Ice Cream",
+		weight = 200,
+		stack = true,
+		close = true,
+		description = "Vanilla Ice Cream",
+		client = {
+			image = "vanillaicecream.png",
+		}
+	},
+
+	["cookiedoughicecream"] = {
+		label = "Cookie Dough Ice Cream",
+		weight = 200,
+		stack = true,
+		close = true,
+		description = "Cookie Dough Ice Cream",
+		client = {
+			image = "cookiedoughicecream.png",
+		}
+	},
+
+	["icecreamcone"] = {
+		label = "Ice Cream Cone",
+		weight = 200,
+		stack = true,
+		close = true,
+		description = "Ice Cream Cone",
+		client = {
+			image = "icecreamcone.png",
+		}
+	},
+
+	["chocolatebar"] = {
+		label = "Chocolate Bar",
+		weight = 200,
+		stack = true,
+		close = true,
+		description = "Chocolate Bar",
+		client = {
+			image = "chocolatebar.png",
+		}
+	},
+
+	["jamdoughnut"] = {
+		label = "Jam Doughnut",
+		weight = 200,
+		stack = true,
+		close = true,
+		description = "Jam Doughnut",
+		client = {
+			image = "jamdoughnut.png",
+		}
+	},
+
+	["vanilla"] = {
+		label = "Vanilla",
+		weight = 200,
+		stack = true,
+		close = true,
+		description = "Vanilla",
+		client = {
+			image = "vanilla.png",
+		}
+	},
+
+	["saltedcaramelicecream"] = {
+		label = "Salted Caramel Ice Cream",
+		weight = 200,
+		stack = true,
+		close = true,
+		description = "Salted Caramel Ice Cream",
+		client = {
+			image = "saltedcaramelicecream.png",
+		}
+	},
+
+	["chocolatesmoothie"] = {
+		label = "Chocolate Smoothie",
+		weight = 200,
+		stack = true,
+		close = true,
+		description = "Chocolate Smoothie",
+		client = {
+			image = "chocolatesmoothie.png",
+		}
+	},
+
+	["toffeeicecream"] = {
+		label = "Toffee Ice Cream",
+		weight = 200,
+		stack = true,
+		close = true,
+		description = "Toffee Ice Cream",
+		client = {
+			image = "toffeeicecream.png",
+		}
+	},
+
+	["softdrinkscup"] = {
+		label = "Soft Drinks Cup",
+		weight = 200,
+		stack = true,
+		close = true,
+		description = "Soft Drinks Cup",
+		client = {
+			image = "softdrinkscup.png",
+		}
+	},
+
+	["pistachio"] = {
+		label = "Pistachio",
+		weight = 200,
+		stack = true,
+		close = true,
+		description = "Pistachio",
+		client = {
+			image = "pistachio.png",
+		}
+	},
+
+	["chocolate"] = {
+		label = "Chocolate",
+		weight = 200,
+		stack = true,
+		close = true,
+		description = "Chocolate",
+		client = {
+			image = "chocolate.png",
+		}
+	},
+
+	["pistachioicecream"] = {
+		label = "Pistachio Ice Cream",
+		weight = 200,
+		stack = true,
+		close = true,
+		description = "Pistachio Ice Cream",
+		client = {
+			image = "pistachioicecream.png",
+		}
+	},
+
+	["saltedcaramel"] = {
+		label = "Salted Caramel",
+		weight = 200,
+		stack = true,
+		close = true,
+		description = "Salted Caramel",
+		client = {
+			image = "saltedcaramel.png",
+		}
+	},
+
+	["smoothiemix"] = {
+		label = "Smoothie Mix",
+		weight = 200,
+		stack = true,
+		close = true,
+		description = "Smoothie Mix",
+		client = {
+			image = "smoothiemix.png",
+		}
+	},
+
+	["sugardoughnut"] = {
+		label = "Sugar Doughnut",
+		weight = 200,
+		stack = true,
+		close = true,
+		description = "Sugar Doughnut",
+		client = {
+			image = "sugardoughnut.png",
+		}
+	},
+
+	["strawberrysmoothie"] = {
+		label = "Strawberry Smoothie",
+		weight = 200,
+		stack = true,
+		close = true,
+		description = "Strawberry Smoothie",
+		client = {
+			image = "strawberrysmoothie.png",
+		}
+	},
+
+	["smoothiecup"] = {
+		label = "Smoothie Cup",
+		weight = 200,
+		stack = true,
+		close = true,
+		description = "Smoothie Cup",
+		client = {
+			image = "smoothiecup.png",
+		}
+	},
+
+	["cookiedough"] = {
+		label = "Cookie Dough",
+		weight = 200,
+		stack = true,
+		close = true,
+		description = "Cookie Dough",
+		client = {
+			image = "cookiedough.png",
+		}
+	},
+
+	["vanillacupcake"] = {
+		label = "Vanilla Cupcake",
+		weight = 200,
+		stack = true,
+		close = true,
+		description = "Vanilla Cupcake",
+		client = {
+			image = "vanillacupcake.png",
+		}
+	},
+
+	["coffee"] = {
+		label = "Coffee",
+		weight = 200,
+		stack = true,
+		close = true,
+		description = "Hot Coffee",
+		client = {
+			image = "coffee.png",
+		}
+	},
+
+	["vanillasmoothie"] = {
+		label = "Vanilla Smoothie",
+		weight = 200,
+		stack = true,
+		close = true,
+		description = "Vanilla Smoothie",
+		client = {
+			image = "vanillasmoothie.png",
+		}
+	},
+
+	["mint"] = {
+		label = "Mint",
+		weight = 200,
+		stack = true,
+		close = true,
+		description = "Mint",
+		client = {
+			image = "mint.png",
+		}
+	},
+
+	["custarddoughnut"] = {
+		label = "Custard Doughnut",
+		weight = 200,
+		stack = true,
+		close = true,
+		description = "Custard Doughnut",
+		client = {
+			image = "custarddoughnut.png",
+		}
+	},
+
 
 ```
